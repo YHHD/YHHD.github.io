@@ -4,7 +4,6 @@ import Pagination from '../../../components/Pagination.astro';
 import PostCard from '../../../components/PostCard.astro';
 import PostsAside from '../../../components/PostsAside.astro';
 import { getPosts, tagCounts } from '../../../lib/content';
-import { tagSlug } from '../../../lib/site';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -25,44 +24,22 @@ export async function getStaticPaths() {
 }
 
 const { posts, currentPage, lastPage, total } = Astro.props;
-const allPosts = await getPosts();
-const tags = tagCounts(allPosts);
+const tags = tagCounts(await getPosts());
 ---
 
 <BaseLayout title={`文章 · 第 ${currentPage} 页`} description={`浏览第 ${currentPage} 页工程札记。`} noindex>
-  <section class="page-hero">
-    <div class="container">
-      <div class="page-hero__inner">
-        <div>
-          <span class="eyebrow">Writing / Page {currentPage}</span>
-          <h1>文章与工程札记</h1>
-          <p>共 {total} 篇文章。当前是第 {currentPage} 页。</p>
-        </div>
-        <aside class="page-hero__aside">
-          <strong>按时间倒序排列</strong>
-          点击标签进入相关主题，或者使用右上角搜索快速找到一篇旧文。
-        </aside>
+  <h1 class="sr-only">文章</h1>
+  <div class="container posts-reference-layout">
+    <main>
+      <div class="ref-list-heading">
+        <span>文章</span>
+        <span>{total} 篇</span>
       </div>
-    </div>
-  </section>
-
-  <div class="container">
-    <div class="filter-bar">
-      <span class="filter-label">Topics</span>
-      <a class="filter-chip" href="/posts/">全部</a>
-      {tags.slice(0, 8).map(([tag]) => (
-        <a class="filter-chip" href={`/tags/${tagSlug(tag)}/`}>{tag}</a>
-      ))}
-    </div>
-
-    <div class="posts-layout">
-      <div>
-        <div class="posts-list">
-          {posts.map((post) => <PostCard post={post} />)}
-        </div>
-        <Pagination currentPage={currentPage} lastPage={lastPage} basePath="/posts" />
+      <div class="ref-post-list">
+        {posts.map((post) => <PostCard post={post} />)}
       </div>
-      <PostsAside tags={tags} />
-    </div>
+      <Pagination currentPage={currentPage} lastPage={lastPage} basePath="/posts" />
+    </main>
+    <PostsAside tags={tags} />
   </div>
 </BaseLayout>

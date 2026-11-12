@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import { getPosts, getWiki } from '../../lib/content';
+import { getPosts } from '../../lib/content';
 import { formatDate, isoDate, readingTime, tagSlug, wordCount } from '../../lib/site';
 
 export async function getStaticPaths() {
@@ -16,16 +16,6 @@ const posts = await getPosts();
 const index = posts.findIndex((entry) => entry.id === post.id);
 const newer = index > 0 ? posts[index - 1] : undefined;
 const older = index < posts.length - 1 ? posts[index + 1] : undefined;
-const wiki = await getWiki();
-const relatedWiki = wiki
-  .map((entry) => ({
-    entry,
-    score: entry.data.tags.filter((tag) => post.data.tags.includes(tag)).length + (entry.data.category === post.data.category ? 1 : 0),
-  }))
-  .filter(({ score }) => score > 0)
-  .sort((a, b) => b.score - a.score || b.entry.data.date.valueOf() - a.entry.data.date.valueOf())
-  .slice(0, 3)
-  .map(({ entry }) => entry);
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const minutes = readingTime(post.body ?? '');
 const words = wordCount(post.body ?? '');
@@ -38,90 +28,68 @@ const words = wordCount(post.body ?? '');
   publishedTime={post.data.date}
   updatedTime={post.data.updated}
 >
-  <div class="container article-page" data-reading-scope>
-    <nav class="breadcrumb" aria-label="面包屑">
-      <a href="/posts/">文章</a>
-      <Icon name="chevron-right" />
-      <span>{post.data.category}</span>
-      <Icon name="chevron-right" />
-      <span>{isoDate(post.data.date).slice(0, 7)}</span>
-    </nav>
+  <div class="container article-page article-page--simple" data-reading-scope>
+    <div class="article-single">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/posts/">文章</a>
+        <Icon name="chevron-right" />
+        <span>{post.data.category}</span>
+        <Icon name="chevron-right" />
+        <span>{isoDate(post.data.date).slice(0, 7)}</span>
+      </nav>
 
-    <header class="article-header">
-      <div class="meta-row">
-        <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date, 'long')}</time>
-        <span class="dot"></span>
-        <span>{words.toLocaleString('zh-CN')} 字</span>
-        <span class="dot"></span>
-        <span>阅读约 {minutes} 分钟</span>
-      </div>
-      <h1>{post.data.title}</h1>
-      <p class="article-header__description">{post.data.description}</p>
-      <div class="tag-row">
-        {post.data.tags.map((tag) => (
-          <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
-        ))}
-      </div>
-    </header>
-
-    <div class="article-grid">
-      <div class="article-main">
-        {tocHeadings.length > 0 && (
-          <details class="mobile-toc">
-            <summary>目录 · {tocHeadings.length} 节</summary>
-            <nav>
-              {tocHeadings.map((heading) => (
-                <a href={`#${heading.slug}`} class={heading.depth === 3 ? 'depth-3' : undefined}>{heading.text}</a>
-              ))}
-            </nav>
-          </details>
-        )}
-        <article class="post-prose">
-          <Content />
-        </article>
-
-        <footer class="article-footer">
-          <span class="article-footer__label">Tags</span>
-          <div class="tag-row">
-            {post.data.tags.map((tag) => (
-              <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
-            ))}
-          </div>
-
-          {relatedWiki.length > 0 && (
-            <div class="related-wiki">
-              <h2>相关知识库</h2>
-              {relatedWiki.map((entry) => <a href={`/wiki/${entry.id}/`}>{entry.data.title} ↗</a>)}
-            </div>
-          )}
-
-          <nav class="article-nav" aria-label="相邻文章">
-            {newer ? (
-              <a href={`/posts/${newer.id}/`}>
-                <span>← 更新一篇</span>
-                <strong>{newer.data.title}</strong>
-              </a>
-            ) : null}
-            {older ? (
-              <a href={`/posts/${older.id}/`}>
-                <span>更早一篇 →</span>
-                <strong>{older.data.title}</strong>
-              </a>
-            ) : null}
-          </nav>
-        </footer>
-      </div>
+      <header class="article-header">
+        <h1>{post.data.title}</h1>
+        <div class="meta-row">
+          <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date, 'long')}</time>
+          <span class="dot"></span>
+          <span>{words.toLocaleString('zh-CN')} 字</span>
+          <span class="dot"></span>
+          <span>阅读约 {minutes} 分钟</span>
+        </div>
+        <div class="tag-row">
+          {post.data.tags.map((tag) => (
+            <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
+          ))}
+        </div>
+      </header>
 
       {tocHeadings.length > 0 && (
-        <aside class="article-aside">
-          <nav class="toc" aria-label="文章目录">
-            <span class="toc__label">On this page</span>
+        <details class="article-toc">
+          <summary>目录 · {tocHeadings.length} 节</summary>
+          <nav>
             {tocHeadings.map((heading) => (
               <a href={`#${heading.slug}`} class={heading.depth === 3 ? 'depth-3' : undefined}>{heading.text}</a>
             ))}
           </nav>
-        </aside>
+        </details>
       )}
+
+      <article class="post-prose">
+        <Content />
+      </article>
+
+      <footer class="article-footer article-footer--simple">
+        <div class="tag-row">
+          {post.data.tags.map((tag) => (
+            <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
+          ))}
+        </div>
+        <nav class="article-nav" aria-label="相邻文章">
+          {newer ? (
+            <a href={`/posts/${newer.id}/`}>
+              <span>← 更新一篇</span>
+              <strong>{newer.data.title}</strong>
+            </a>
+          ) : null}
+          {older ? (
+            <a href={`/posts/${older.id}/`}>
+              <span>更早一篇 →</span>
+              <strong>{older.data.title}</strong>
+            </a>
+          ) : null}
+        </nav>
+      </footer>
     </div>
   </div>
 </BaseLayout>

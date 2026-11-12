@@ -1,148 +1,74 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { getPosts, getWiki, tagCounts } from '../lib/content';
-import { categoryStyle, formatDate, SITE } from '../lib/site';
+import { getPosts, getWiki } from '../lib/content';
 
 const posts = await getPosts();
 const wikiEntries = await getWiki();
-const tags = tagCounts([...posts, ...wikiEntries]);
-const recentPosts = posts.slice(0, 4);
-const curatedSlugs = ['claude-code-arch', 'ai-tools', 'openclaw', 'archon-cn-provider', 'ai-and-work', 'vless-reality-troubleshooting'];
-const curatedWiki = curatedSlugs
-  .map((slug) => wikiEntries.find((entry) => entry.id === slug))
-  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
+const recentPosts = posts.slice(0, 10);
+const recentWiki = wikiEntries.slice(0, 7);
+const monthDay = (date: Date) =>
+  new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit' })
+    .format(date)
+    .replaceAll('/', '/');
 ---
 
 <BaseLayout>
-  <section class="home-hero">
-    <div class="container">
-      <div class="home-hero__grid">
-        <div>
-          <div class="hero-kicker">
-            <span>PERSONAL NOTES</span>
-            <span>AI · SYSTEMS · TOOLS</span>
-          </div>
-          <h1>
-            把复杂系统，
-            <span class="quiet">写成可以复用的知识。</span>
-          </h1>
-          <p class="home-hero__copy">
-            我是 {SITE.author}。这里记录 AI Agent、后端系统、开发者工具，以及那些做完项目之后仍然值得留下来的判断。
-          </p>
-          <div class="hero-actions">
-            <a class="button button--primary" href="/posts/">
-              开始阅读
-              <Icon name="arrow-right" />
-            </a>
-            <a class="button" href="/wiki/">
-              <Icon name="book" />
-              浏览知识库
-            </a>
-          </div>
-          <div class="hero-stats" aria-label="站点内容统计">
-            <div class="hero-stat"><strong>{String(posts.length).padStart(2, '0')}</strong><span>篇长文</span></div>
-            <div class="hero-stat"><strong>{String(wikiEntries.length).padStart(2, '0')}</strong><span>条知识词条</span></div>
-            <div class="hero-stat"><strong>{String(tags.length).padStart(2, '0')}</strong><span>个主题标签</span></div>
-          </div>
-        </div>
+  <div class="container home-portal">
+    <nav class="portal-grid" aria-label="站点入口">
+      <a class="portal-card" href="/wiki/" style="--portal-accent: var(--blue); --portal-soft: var(--blue-soft);">
+        <span class="portal-card__icon"><Icon name="network" /></span>
+        <span class="portal-card__copy"><strong>Wiki</strong><small>持续维护的互链词条</small></span>
+        <Icon name="chevron-right" class="portal-card__arrow" />
+      </a>
+      <a class="portal-card" href="/posts/" style="--portal-accent: var(--orange); --portal-soft: var(--orange-soft);">
+        <span class="portal-card__icon"><Icon name="pen" /></span>
+        <span class="portal-card__copy"><strong>文章</strong><small>随时写下的工程札记</small></span>
+        <Icon name="chevron-right" class="portal-card__arrow" />
+      </a>
+      <a class="portal-card" href="/archives/" style="--portal-accent: var(--teal); --portal-soft: var(--teal-soft);">
+        <span class="portal-card__icon"><Icon name="archive" /></span>
+        <span class="portal-card__copy"><strong>归档</strong><small>按时间回看全部内容</small></span>
+        <Icon name="chevron-right" class="portal-card__arrow" />
+      </a>
+      <a class="portal-card" href="/about/" style="--portal-accent: var(--purple); --portal-soft: var(--purple-soft);">
+        <span class="portal-card__icon"><Icon name="user" /></span>
+        <span class="portal-card__copy"><strong>关于</strong><small>关于这个站点</small></span>
+        <Icon name="chevron-right" class="portal-card__arrow" />
+      </a>
+    </nav>
 
-        <aside class="hero-note" aria-label="最近关注">
-          <div class="hero-note__top">
-            <strong>最近在关注</strong>
-            <span>NOW / 2026.11</span>
-          </div>
-          <div class="now-list">
-            <div class="now-item">
-              <span class="now-icon"><Icon name="brain" /></span>
-              <div><strong>Agent 的工程边界</strong><p>工具权限、上下文装配、可观测性与失败恢复。</p></div>
-            </div>
-            <div class="now-item">
-              <span class="now-icon"><Icon name="terminal" /></span>
-              <div><strong>把测量做扎实</strong><p>TTFT、TPS 与模型供应商的真实差异。</p></div>
-            </div>
-            <div class="now-item">
-              <span class="now-icon"><Icon name="layers" /></span>
-              <div><strong>知识系统</strong><p>让笔记、项目和研究资料互相找到。</p></div>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">Explore</span>
-          <h2>从这里开始</h2>
+    <div class="home-feed-grid">
+      <section class="home-feed" aria-labelledby="home-posts-title">
+        <div class="home-feed__heading">
+          <h1 id="home-posts-title">文章</h1>
+          <a href="/posts/">全部 <Icon name="arrow-right" /></a>
         </div>
-        <p>文章负责展开一个问题，知识库负责把结论沉淀下来，项目则是这些判断被真正运行过的地方。</p>
-      </div>
-      <div class="shelf-grid">
-        <a class="shelf-card" href="/posts/">
-          <span class="shelf-card__sticker"><Icon name="pen" size={21} /></span>
-          <h3>工程札记</h3>
-          <p>关于 Agent、系统设计和工具构建的长文。尽量写清楚问题、取舍与最后的边界。</p>
-          <span class="shelf-card__footer"><span>{posts.length} ARTICLES</span><Icon name="arrow-right" /></span>
-        </a>
-        <a class="shelf-card" href="/wiki/">
-          <span class="shelf-card__sticker"><Icon name="book" size={21} /></span>
-          <h3>知识图谱</h3>
-          <p>按主题组织的词条、方案和资料。比时间线更适合长期维护，也更适合互相引用。</p>
-          <span class="shelf-card__footer"><span>{wikiEntries.length} ENTRIES</span><Icon name="arrow-right" /></span>
-        </a>
-        <a class="shelf-card" href={SITE.github} target="_blank" rel="noreferrer">
-          <span class="shelf-card__sticker"><Icon name="github" size={21} /></span>
-          <h3>公开项目</h3>
-          <p>TPS Bench、AI 内容流水线，以及一些仍在生长中的实验。代码比总结更诚实。</p>
-          <span class="shelf-card__footer"><span>GITHUB / YHHD</span><Icon name="arrow-up-right" /></span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">Latest</span>
-          <h2>最近写下的</h2>
-        </div>
-        <a class="text-link" href="/posts/">全部文章 <Icon name="arrow-right" /></a>
-      </div>
-      <div class="home-split">
-        <div class="post-list">
+        <div class="home-post-list">
           {recentPosts.map((post) => (
-            <a class="post-row" href={`/posts/${post.id}/`}>
-              <span class="post-row__date">{formatDate(post.data.date)}</span>
-              <span class="post-row__body">
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description}</p>
-              </span>
-              <span class="post-row__arrow"><Icon name="arrow-right" /></span>
+            <a class="home-post-row" href={`/posts/${post.id}/`}>
+              <time datetime={post.data.date.toISOString()}>{monthDay(post.data.date)}</time>
+              <span>{post.data.title}</span>
             </a>
           ))}
         </div>
+        <a class="home-more" href="/posts/">查看全部 {posts.length} 篇文章 <Icon name="arrow-right" /></a>
+      </section>
 
-        <div class="wiki-mini">
-          <div class="wiki-mini__heading">
-            <h3>知识库精选</h3>
-            <span>{String(curatedWiki.length).padStart(2, '0')} ENTRIES</span>
-          </div>
-          <div class="wiki-mini__list">
-            {curatedWiki.map((entry) => (
-              <a class="wiki-mini__item" href={`/wiki/${entry.id}/`}>
-                <span class="wiki-mini__dot" style={`--dot: ${categoryStyle(entry.data.category).color}`}></span>
-                <strong>{entry.data.title}</strong>
-                <span>{entry.data.category}</span>
-              </a>
-            ))}
-          </div>
-          <a class="text-link" href="/wiki/" style="margin-top: 16px;">打开完整知识库 <Icon name="arrow-right" /></a>
+      <section class="home-feed" aria-labelledby="home-wiki-title">
+        <div class="home-feed__heading">
+          <h2 id="home-wiki-title">Wiki</h2>
+          <a href="/wiki/">全部 <Icon name="arrow-right" /></a>
         </div>
-      </div>
+        <div class="home-wiki-list">
+          {recentWiki.map((entry) => (
+            <a class="home-wiki-item" href={`/wiki/${entry.id}/`}>
+              <strong>{entry.data.title}</strong>
+              <p>{entry.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 </BaseLayout>

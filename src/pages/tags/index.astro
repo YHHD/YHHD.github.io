@@ -8,30 +8,15 @@ const wiki = await getWiki();
 const tags = tagCounts([...posts, ...wiki]);
 ---
 
-<BaseLayout title="标签" description="按标签浏览文章与知识库词条。">
-  <section class="page-hero">
-    <div class="container">
-      <div class="page-hero__inner">
-        <div>
-          <span class="eyebrow">Index</span>
-          <h1>标签索引</h1>
-          <p>标签是内容之间的轻量连接。一个标签下可能同时出现文章、知识词条和项目记录。</p>
-        </div>
-        <aside class="page-hero__aside">
-          <strong>{tags.length} 个标签</strong>
-          由文章和知识库共同生成。标签页只做聚合，不替代知识库里的主动互链。
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <div class="container">
-    <div class="tag-index">
+<BaseLayout title="标签" description="按标签浏览文章与 Wiki 词条。">
+  <div class="container simple-page">
+    <header class="simple-page__heading">
+      <h1>标签</h1>
+      <p>共 {tags.length} 个标签，连接文章与 Wiki。</p>
+    </header>
+    <div class="simple-tag-list">
       {tags.map(([tag, count]) => (
-        <a class="tag-index__item" href={`/tags/${tagSlug(tag)}/`}>
-          <span>#{tag}</span>
-          <strong>{count}</strong>
-        </a>
+        <a href={`/tags/${tagSlug(tag)}/`}><span>#{tag}</span><strong>{count}</strong></a>
       ))}
     </div>
   </div>

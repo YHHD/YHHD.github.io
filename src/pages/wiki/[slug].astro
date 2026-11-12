@@ -17,16 +17,6 @@ const categoryEntries = allEntries.filter((item) => item.data.category === entry
 const index = categoryEntries.findIndex((item) => item.id === entry.id);
 const previous = index > 0 ? categoryEntries[index - 1] : undefined;
 const next = index < categoryEntries.length - 1 ? categoryEntries[index + 1] : undefined;
-const related = allEntries
-  .filter((item) => item.id !== entry.id)
-  .map((item) => ({
-    item,
-    score: item.data.tags.filter((tag) => entry.data.tags.includes(tag)).length + (item.data.category === entry.data.category ? 2 : 0),
-  }))
-  .filter(({ score }) => score > 0)
-  .sort((a, b) => b.score - a.score || b.item.data.date.valueOf() - a.item.data.date.valueOf())
-  .slice(0, 4)
-  .map(({ item }) => item);
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const minutes = readingTime(entry.body ?? '');
 const words = wordCount(entry.body ?? '');
@@ -39,92 +29,66 @@ const words = wordCount(entry.body ?? '');
   publishedTime={entry.data.date}
   updatedTime={entry.data.updated}
 >
-  <div class="container article-page" data-reading-scope>
-    <nav class="breadcrumb" aria-label="面包屑">
-      <a href="/wiki/">知识库</a>
-      <Icon name="chevron-right" />
-      <span>{entry.data.category}</span>
-      <Icon name="chevron-right" />
-      <span>词条</span>
-    </nav>
-
-    <header class="article-header">
-      <div class="meta-row">
+  <div class="container article-page article-page--simple" data-reading-scope>
+    <div class="article-single">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/wiki/">Wiki</a>
+        <Icon name="chevron-right" />
         <span>{entry.data.category}</span>
-        <span class="dot"></span>
-        <time datetime={isoDate(entry.data.date)}>{formatDate(entry.data.date, 'long')}</time>
-        <span class="dot"></span>
-        <span>{words.toLocaleString('zh-CN')} 字</span>
-        <span class="dot"></span>
-        <span>阅读约 {minutes} 分钟</span>
-      </div>
-      <h1>{entry.data.title}</h1>
-      <p class="article-header__description">{entry.data.description}</p>
-      <div class="tag-row">
-        {entry.data.tags.map((tag) => (
-          <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
-        ))}
-      </div>
-    </header>
+      </nav>
 
-    <div class="article-grid">
-      <div class="article-main">
-        {tocHeadings.length > 0 && (
-          <details class="mobile-toc">
-            <summary>目录 · {tocHeadings.length} 节</summary>
-            <nav>
-              {tocHeadings.map((heading) => (
-                <a href={`#${heading.slug}`} class={heading.depth === 3 ? 'depth-3' : undefined}>{heading.text}</a>
-              ))}
-            </nav>
-          </details>
-        )}
-        <article class="post-prose">
-          <Content />
-        </article>
-
-        <footer class="article-footer">
-          <span class="article-footer__label">Tags</span>
-          <div class="tag-row">
-            {entry.data.tags.map((tag) => (
-              <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
-            ))}
-          </div>
-
-          {related.length > 0 && (
-            <div class="related-wiki">
-              <h2>继续阅读</h2>
-              {related.map((item) => <a href={`/wiki/${item.id}/`}>{item.data.title} ↗</a>)}
-            </div>
-          )}
-
-          <nav class="article-nav" aria-label="相邻词条">
-            {previous ? (
-              <a href={`/wiki/${previous.id}/`}>
-                <span>← 上一词条</span>
-                <strong>{previous.data.title}</strong>
-              </a>
-            ) : null}
-            {next ? (
-              <a href={`/wiki/${next.id}/`}>
-                <span>下一词条 →</span>
-                <strong>{next.data.title}</strong>
-              </a>
-            ) : null}
-          </nav>
-        </footer>
-      </div>
+      <header class="article-header">
+        <h1>{entry.data.title}</h1>
+        <div class="meta-row">
+          <time datetime={isoDate(entry.data.date)}>{formatDate(entry.data.date, 'long')}</time>
+          <span class="dot"></span>
+          <span>{words.toLocaleString('zh-CN')} 字</span>
+          <span class="dot"></span>
+          <span>阅读约 {minutes} 分钟</span>
+        </div>
+        <div class="tag-row">
+          {entry.data.tags.map((tag) => (
+            <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
+          ))}
+        </div>
+      </header>
 
       {tocHeadings.length > 0 && (
-        <aside class="article-aside">
-          <nav class="toc" aria-label="词条目录">
-            <span class="toc__label">On this page</span>
+        <details class="article-toc">
+          <summary>目录 · {tocHeadings.length} 节</summary>
+          <nav>
             {tocHeadings.map((heading) => (
               <a href={`#${heading.slug}`} class={heading.depth === 3 ? 'depth-3' : undefined}>{heading.text}</a>
             ))}
           </nav>
-        </aside>
+        </details>
       )}
+
+      <article class="post-prose">
+        <Content />
+      </article>
+
+      <footer class="article-footer article-footer--simple">
+        <div class="tag-row">
+          {entry.data.tags.map((tag) => (
+            <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
+          ))}
+        </div>
+        <nav class="article-nav" aria-label="相邻词条">
+          {previous ? (
+            <a href={`/wiki/${previous.id}/`}>
+              <span>← 上一词条</span>
+              <strong>{previous.data.title}</strong>
+            </a>
+          ) : null}
+          {next ? (
+            <a href={`/wiki/${next.id}/`}>
+              <span>下一词条 →</span>
+              <strong>{next.data.title}</strong>
+            </a>
+          ) : null}
+        </nav>
+      </footer>
     </div>
   </div>
 </BaseLayout>

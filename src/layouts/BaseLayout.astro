@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import SearchDialog from '../components/SearchDialog.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { SITE } from '../lib/site';
@@ -80,7 +79,6 @@ const imageUrl = new URL(image, Astro.site ?? SITE.url);
       <slot />
     </main>
     <SiteFooter />
-    <SearchDialog />
 
     <script>
       const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
@@ -121,27 +119,7 @@ const imageUrl = new URL(image, Astro.site ?? SITE.url);
         });
       };
 
-      const setupToc = () => {
-        const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a[href^="#"]')];
-        const headings = links
-          .map((link) => document.querySelector<HTMLElement>(link.getAttribute('href') ?? ''))
-          .filter((node): node is HTMLElement => Boolean(node));
-        if (!links.length || !headings.length) return;
-        const observer = new IntersectionObserver(
-          (entries) => {
-            const visible = entries
-              .filter((entry) => entry.isIntersecting)
-              .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-            if (!visible) return;
-            links.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${visible.target.id}`));
-          },
-          { rootMargin: '-96px 0px -72% 0px', threshold: [0, 1] },
-        );
-        headings.forEach((heading) => observer.observe(heading));
-      };
-
       setupCopyButtons();
-      setupToc();
     </script>
   </body>
 </html>

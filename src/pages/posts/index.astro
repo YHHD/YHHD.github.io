@@ -4,7 +4,6 @@ import Pagination from '../../components/Pagination.astro';
 import PostCard from '../../components/PostCard.astro';
 import PostsAside from '../../components/PostsAside.astro';
 import { getPosts, tagCounts } from '../../lib/content';
-import { tagSlug } from '../../lib/site';
 
 const allPosts = await getPosts();
 const pageSize = 10;
@@ -14,45 +13,18 @@ const tags = tagCounts(allPosts);
 ---
 
 <BaseLayout title="文章" description="关于 AI Agent、后端系统与开发者工具的长文与工程札记。">
-  <section class="page-hero">
-    <div class="container">
-      <div class="page-hero__inner">
-        <div>
-          <span class="eyebrow">Writing</span>
-          <h1>文章与工程札记</h1>
-          <p>从一个具体问题出发，尽量把背景、取舍、实现和边界都写完整。不是新闻流，也不追热点。</p>
-        </div>
-        <aside class="page-hero__aside">
-          <strong>{allPosts.length} 篇文章 · {tags.length} 个标签</strong>
-          最近更新于 {allPosts[0] ? new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(allPosts[0].data.date) : '尚未发布'}。
-          <br />按时间排列，也可以从右侧标签进入相关主题。
-        </aside>
+  <h1 class="sr-only">文章</h1>
+  <div class="container posts-reference-layout">
+    <main>
+      <div class="ref-list-heading">
+        <span>文章</span>
+        <span>{allPosts.length} 篇</span>
       </div>
-    </div>
-  </section>
-
-  <div class="container">
-    <div class="filter-bar">
-      <span class="filter-label">Topics</span>
-      <a class="filter-chip is-active" href="/posts/">全部</a>
-      {tags.slice(0, 8).map(([tag]) => (
-        <a class="filter-chip" href={`/tags/${tagSlug(tag)}/`}>{tag}</a>
-      ))}
-      <a class="filter-chip" href="/tags/">更多标签</a>
-    </div>
-
-    <div class="posts-layout">
-      <div>
-        {posts.length ? (
-          <div class="posts-list">
-            {posts.map((post) => <PostCard post={post} />)}
-          </div>
-        ) : (
-          <div class="empty-state">还没有发布文章。</div>
-        )}
-        <Pagination currentPage={1} lastPage={lastPage} basePath="/posts" />
+      <div class="ref-post-list">
+        {posts.map((post) => <PostCard post={post} />)}
       </div>
-      <PostsAside tags={tags} />
-    </div>
+      <Pagination currentPage={1} lastPage={lastPage} basePath="/posts" />
+    </main>
+    <PostsAside tags={tags} />
   </div>
 </BaseLayout>

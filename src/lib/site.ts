@@ -9,8 +9,8 @@ export const SITE = {
   copyrightYear: 2026,
   github: 'https://github.com/YHHD',
   nav: [
+    { href: '/wiki/', label: 'Wiki' },
     { href: '/posts/', label: '文章' },
-    { href: '/wiki/', label: '知识库' },
     { href: '/archives/', label: '归档' },
     { href: '/about/', label: '关于' },
   ],
@@ -106,15 +106,4 @@ export function tagSlug(tag: string) {
     .replace(/[^\p{Letter}\p{Number}-]+/gu, '')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
-}
-
-export function plainText(markdown: string) {
-  return markdown
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/[#>*_~`|-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
 }
