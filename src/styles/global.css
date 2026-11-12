@@ -3043,3 +3043,79 @@ img {
 .profile-avatar img {
   height: 100%;
 }
+
+/* Minimal Wiki landing, closer to the reference structure */
+
+.wiki-landing {
+  padding: 58px 0 30px;
+}
+
+.wiki-maintenance {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.wiki-maintenance__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--orange);
+  border-radius: 50%;
+}
+
+.wiki-landing h1 {
+  margin: 19px 0 12px;
+  font-size: clamp(2.3rem, 3.2vw, 2.9rem);
+  font-weight: 720;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+
+.wiki-landing p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.wiki-categories--landing {
+  padding: 8px 0 72px;
+}
+
+.wiki-categories--landing .wiki-category {
+  padding: 28px 0;
+}
+
+.wiki-categories--landing .wiki-entry {
+  padding: 10px 8px;
+}
+
+.wiki-categories--landing .wiki-entry__body strong {
+  color: var(--ink-2);
+}
+
+@media (max-width: 640px) {
+  .wiki-landing {
+    padding: 42px 0 24px;
+  }
+
+  .wiki-landing h1 {
+    margin-top: 16px;
+  }
+
+  .wiki-categories--landing {
+    padding-bottom: 48px;
+  }
+
+  .wiki-categories--landing .wiki-category {
+    padding: 24px 0;
+  }
+}
