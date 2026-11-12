@@ -2405,8 +2405,8 @@ pre:hover .copy-code,
   }
 
   .home-hero h1 {
-    font-size: clamp(2.8rem, 12vw, 3.9rem);
-    letter-spacing: -0.055em;
+    font-size: clamp(2.1rem, 9vw, 3.2rem);
+    letter-spacing: -0.05em;
   }
 
   .home-hero__copy,
