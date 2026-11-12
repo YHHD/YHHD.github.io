@@ -17,11 +17,11 @@ const wiki = (await getWiki()).filter((entry) => entry.data.tags.includes(tag));
 const total = posts.length + wiki.length;
 ---
 
-<BaseLayout title={`#${tag}`} description={`标记为 ${tag} 的文章和 Wiki 词条。`} noindex>
+<BaseLayout title={`#${tag}`} description={`标记为 ${tag} 的博客和知识库词条。`} noindex>
   <div class="container simple-page">
     <header class="simple-page__heading">
       <h1>#{tag}</h1>
-      <p>{posts.length} 篇文章 · {wiki.length} 条 Wiki</p>
+      <p>{posts.length} 篇博客 · {wiki.length} 条知识库</p>
     </header>
 
     {posts.length > 0 && <div class="ref-post-list">{posts.map((post) => <PostCard post={post} />)}</div>}

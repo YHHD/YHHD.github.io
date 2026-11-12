@@ -12,12 +12,12 @@ const lastPage = Math.max(1, Math.ceil(allPosts.length / pageSize));
 const tags = tagCounts(allPosts);
 ---
 
-<BaseLayout title="文章" description="关于 AI Agent、后端系统与开发者工具的长文与工程札记。">
-  <h1 class="sr-only">文章</h1>
+<BaseLayout title="博客" description="关于 AI Agent、后端系统与开发者工具的长文与工程札记。">
+  <h1 class="sr-only">博客</h1>
   <div class="container posts-reference-layout">
     <main>
       <div class="ref-list-heading">
-        <span>文章</span>
+        <span>博客</span>
         <span>{allPosts.length} 篇</span>
       </div>
       <div class="ref-post-list">

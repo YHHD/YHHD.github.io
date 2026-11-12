@@ -8,11 +8,11 @@ const wiki = await getWiki();
 const tags = tagCounts([...posts, ...wiki]);
 ---
 
-<BaseLayout title="标签" description="按标签浏览文章与 Wiki 词条。">
+<BaseLayout title="标签" description="按标签浏览博客与知识库词条。">
   <div class="container simple-page">
     <header class="simple-page__heading">
       <h1>标签</h1>
-      <p>共 {tags.length} 个标签，连接文章与 Wiki。</p>
+      <p>共 {tags.length} 个标签，连接博客与知识库。</p>
     </header>
     <div class="simple-tag-list">
       {tags.map(([tag, count]) => (

@@ -9,9 +9,8 @@ export const SITE = {
   copyrightYear: 2026,
   github: 'https://github.com/YHHD',
   nav: [
-    { href: '/wiki/', label: 'Wiki' },
-    { href: '/posts/', label: '文章' },
-    { href: '/archives/', label: '归档' },
+    { href: '/posts/', label: '博客' },
+    { href: '/wiki/', label: '知识库' },
     { href: '/about/', label: '关于' },
   ],
 };
@@ -21,7 +20,7 @@ export const CATEGORY_STYLES: Record<string, { color: string; soft: string }> = 
   '系统设计': { color: 'var(--blue)', soft: 'var(--blue-soft)' },
   '开发工具': { color: 'var(--teal)', soft: 'var(--teal-soft)' },
   '工程实践': { color: 'var(--green)', soft: 'var(--green-soft)' },
-  'AI 与 Agent': { color: 'var(--blue)', soft: 'var(--blue-soft)' },
+  'AI 与 Agent': { color: 'var(--sky)', soft: 'var(--sky-soft)' },
   '项目与方案': { color: 'var(--pink)', soft: 'var(--pink-soft)' },
   '技术手册': { color: 'var(--teal)', soft: 'var(--teal-soft)' },
   '研究资料': { color: 'var(--orange)', soft: 'var(--orange-soft)' },
@@ -43,7 +42,7 @@ export const WIKI_CATEGORY_ORDER = [
 ];
 
 export const CATEGORY_STICKER: Record<string, string> = {
-  'AI 与 Agent': 'var(--blue)',
+  'AI 与 Agent': 'var(--sky)',
   '项目与方案': 'var(--pink)',
   '技术手册': 'var(--teal)',
   '研究资料': 'var(--orange)',

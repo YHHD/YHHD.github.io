@@ -27,12 +27,12 @@ const { posts, currentPage, lastPage, total } = Astro.props;
 const tags = tagCounts(await getPosts());
 ---
 
-<BaseLayout title={`文章 · 第 ${currentPage} 页`} description={`浏览第 ${currentPage} 页工程札记。`} noindex>
-  <h1 class="sr-only">文章</h1>
+<BaseLayout title={`博客 · 第 ${currentPage} 页`} description={`浏览第 ${currentPage} 页工程札记。`} noindex>
+  <h1 class="sr-only">博客</h1>
   <div class="container posts-reference-layout">
     <main>
       <div class="ref-list-heading">
-        <span>文章</span>
+        <span>博客</span>
         <span>{total} 篇</span>
       </div>
       <div class="ref-post-list">

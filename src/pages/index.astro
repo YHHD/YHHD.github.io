@@ -16,22 +16,17 @@ const monthDay = (date: Date) =>
 <BaseLayout>
   <div class="container home-portal">
     <nav class="portal-grid" aria-label="站点入口">
-      <a class="portal-card" href="/wiki/" style="--portal-accent: var(--blue); --portal-soft: var(--blue-soft);">
-        <span class="portal-card__icon"><Icon name="network" /></span>
-        <span class="portal-card__copy"><strong>Wiki</strong><small>持续维护的互链词条</small></span>
-        <Icon name="chevron-right" class="portal-card__arrow" />
-      </a>
       <a class="portal-card" href="/posts/" style="--portal-accent: var(--orange); --portal-soft: var(--orange-soft);">
         <span class="portal-card__icon"><Icon name="pen" /></span>
-        <span class="portal-card__copy"><strong>文章</strong><small>随时写下的工程札记</small></span>
+        <span class="portal-card__copy"><strong>博客</strong><small>随时写下的工程札记</small></span>
         <Icon name="chevron-right" class="portal-card__arrow" />
       </a>
-      <a class="portal-card" href="/archives/" style="--portal-accent: var(--teal); --portal-soft: var(--teal-soft);">
-        <span class="portal-card__icon"><Icon name="archive" /></span>
-        <span class="portal-card__copy"><strong>归档</strong><small>按时间回看全部内容</small></span>
+      <a class="portal-card" href="/wiki/" style="--portal-accent: var(--sky); --portal-soft: var(--sky-soft);">
+        <span class="portal-card__icon"><Icon name="network" /></span>
+        <span class="portal-card__copy"><strong>知识库</strong><small>持续维护的互链词条</small></span>
         <Icon name="chevron-right" class="portal-card__arrow" />
       </a>
-      <a class="portal-card" href="/about/" style="--portal-accent: var(--purple); --portal-soft: var(--purple-soft);">
+      <a class="portal-card" href="/about/" style="--portal-accent: var(--purple-deep); --portal-soft: var(--purple-soft);">
         <span class="portal-card__icon"><Icon name="user" /></span>
         <span class="portal-card__copy"><strong>关于</strong><small>关于这个站点</small></span>
         <Icon name="chevron-right" class="portal-card__arrow" />
@@ -41,7 +36,7 @@ const monthDay = (date: Date) =>
     <div class="home-feed-grid">
       <section class="home-feed" aria-labelledby="home-posts-title">
         <div class="home-feed__heading">
-          <h1 id="home-posts-title">文章</h1>
+          <h1 id="home-posts-title">博客</h1>
           <a href="/posts/">全部 <Icon name="arrow-right" /></a>
         </div>
         <div class="home-post-list">
@@ -52,12 +47,12 @@ const monthDay = (date: Date) =>
             </a>
           ))}
         </div>
-        <a class="home-more" href="/posts/">查看全部 {posts.length} 篇文章 <Icon name="arrow-right" /></a>
+        <a class="home-more" href="/posts/">查看全部 {posts.length} 篇博客 <Icon name="arrow-right" /></a>
       </section>
 
       <section class="home-feed" aria-labelledby="home-wiki-title">
         <div class="home-feed__heading">
-          <h2 id="home-wiki-title">Wiki</h2>
+          <h2 id="home-wiki-title">知识库</h2>
           <a href="/wiki/">全部 <Icon name="arrow-right" /></a>
         </div>
         <div class="home-wiki-list">
