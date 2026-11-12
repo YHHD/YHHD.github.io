@@ -9,9 +9,10 @@ export const SITE = {
   copyrightYear: 2026,
   github: 'https://github.com/YHHD',
   nav: [
-    { href: '/posts/', label: '博客' },
-    { href: '/wiki/', label: '知识库' },
-    { href: '/about/', label: '关于' },
+    { href: '/llm-wiki/', label: 'LLM Wiki', badge: 'AI' },
+    { href: '/posts/', label: '博客', badge: '' },
+    { href: '/wiki/', label: '知识库', badge: '' },
+    { href: '/about/', label: '关于', badge: '' },
   ],
 };
 

@@ -28,6 +28,7 @@ const isActive = (href: string) => {
           aria-current={isActive(item.href) ? 'page' : undefined}
         >
           {item.label}
+          {item.badge && <span class="nav-badge">{item.badge}</span>}
         </a>
       ))}
     </nav>
@@ -46,7 +47,10 @@ const isActive = (href: string) => {
 
 <nav class="mobile-nav" data-mobile-nav aria-label="移动端导航">
   {SITE.nav.map((item) => (
-    <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+    <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+      {item.label}
+      {item.badge && <span class="nav-badge">{item.badge}</span>}
+    </a>
   ))}
 </nav>
 

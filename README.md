@@ -14,6 +14,8 @@ DESIGN.md             视觉设计契约
 docs/                 构建后的静态产物（GitHub Pages 发布目录）
 ```
 
+LLM Wiki 是知识库中的 AI/Agent 精选视图，只维护一个入口页，不复制词条内容。
+
 文章和词条都使用 Markdown frontmatter：
 
 ```yaml

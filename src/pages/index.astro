@@ -6,7 +6,8 @@ import { getPosts, getWiki } from '../lib/content';
 const posts = await getPosts();
 const wikiEntries = await getWiki();
 const recentPosts = posts.slice(0, 10);
-const recentWiki = wikiEntries.slice(0, 7);
+const llmWikiSlugs = new Set(['claude-code-arch', 'hermes-agent-arch', 'openclaw', 'ai-tools', 'ai-and-work', 'archon-cn-provider']);
+const recentWiki = wikiEntries.filter((entry) => llmWikiSlugs.has(entry.id)).slice(0, 7);
 const monthDay = (date: Date) =>
   new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit' })
     .format(date)
@@ -16,14 +17,19 @@ const monthDay = (date: Date) =>
 <BaseLayout>
   <div class="container home-portal">
     <nav class="portal-grid" aria-label="站点入口">
+      <a class="portal-card" href="/llm-wiki/" style="--portal-accent: var(--sky); --portal-soft: var(--sky-soft);">
+        <span class="portal-card__icon"><Icon name="network" /></span>
+        <span class="portal-card__copy"><strong>LLM Wiki</strong><small>AI Agent 维护的互链词条</small></span>
+        <Icon name="chevron-right" class="portal-card__arrow" />
+      </a>
       <a class="portal-card" href="/posts/" style="--portal-accent: var(--orange); --portal-soft: var(--orange-soft);">
         <span class="portal-card__icon"><Icon name="pen" /></span>
         <span class="portal-card__copy"><strong>博客</strong><small>随时写下的工程札记</small></span>
         <Icon name="chevron-right" class="portal-card__arrow" />
       </a>
-      <a class="portal-card" href="/wiki/" style="--portal-accent: var(--sky); --portal-soft: var(--sky-soft);">
-        <span class="portal-card__icon"><Icon name="network" /></span>
-        <span class="portal-card__copy"><strong>知识库</strong><small>持续维护的互链词条</small></span>
+      <a class="portal-card" href="/wiki/" style="--portal-accent: var(--teal); --portal-soft: var(--teal-soft);">
+        <span class="portal-card__icon"><Icon name="book" /></span>
+        <span class="portal-card__copy"><strong>知识库</strong><small>持续维护的完整词条目录</small></span>
         <Icon name="chevron-right" class="portal-card__arrow" />
       </a>
       <a class="portal-card" href="/about/" style="--portal-accent: var(--purple-deep); --portal-soft: var(--purple-soft);">
@@ -52,8 +58,8 @@ const monthDay = (date: Date) =>
 
       <section class="home-feed" aria-labelledby="home-wiki-title">
         <div class="home-feed__heading">
-          <h2 id="home-wiki-title">知识库</h2>
-          <a href="/wiki/">全部 <Icon name="arrow-right" /></a>
+          <h2 id="home-wiki-title">LLM Wiki</h2>
+          <a href="/llm-wiki/">全部 <Icon name="arrow-right" /></a>
         </div>
         <div class="home-wiki-list">
           {recentWiki.map((entry) => (

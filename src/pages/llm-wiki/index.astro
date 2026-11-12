@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getWiki } from '../../lib/content';
+
+const entries = await getWiki();
+const byId = new Map(entries.map((entry) => [entry.id, entry]));
+const groups = [
+  {
+    label: '系统 · SYSTEMS',
+    color: 'var(--sky)',
+    slugs: ['claude-code-arch', 'hermes-agent-arch', 'openclaw'],
+  },
+  {
+    label: '方法 · PRACTICE',
+    color: 'var(--purple)',
+    slugs: ['ai-tools', 'ai-and-work'],
+  },
+  {
+    label: '项目 · PROJECTS',
+    color: 'var(--pink)',
+    slugs: ['archon-cn-provider'],
+  },
+].map((group) => ({
+  ...group,
+  entries: group.slugs.map((slug) => byId.get(slug)).filter((entry): entry is NonNullable<typeof entry> => Boolean(entry)),
+}));
+---
+
+<BaseLayout title="LLM Wiki" description="由知识库中 AI 与 Agent 相关词条组成的精选互链 Wiki。">
+  <section class="wiki-landing">
+    <div class="container">
+      <div class="wiki-maintenance">
+        <span class="wiki-maintenance__dot"></span>
+        本 Wiki 从知识库中精选 AI 与 Agent 相关内容，持续整理与互链。
+      </div>
+      <div class="llm-wiki-title">
+        <h1>LLM Wiki</h1>
+        <span>AI</span>
+      </div>
+      <p>聚焦 AI Agent、工具与工程实践的精简入口。完整内容仍统一维护在知识库中。</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="wiki-categories wiki-categories--landing">
+      {groups.map((group) => (
+        <section class="wiki-category">
+          <div class="wiki-category__heading">
+            <span class="wiki-category__dot" style={`--dot: ${group.color}`}></span>
+            <h2>{group.label}</h2>
+            <span class="rule"></span>
+            <span>{String(group.entries.length).padStart(2, '0')}</span>
+          </div>
+          <div class="wiki-entries">
+            {group.entries.map((entry) => (
+              <a class="wiki-entry" href={`/wiki/${entry.id}/`}>
+                <span class="wiki-entry__dot" style={`--dot: ${group.color}`}></span>
+                <span class="wiki-entry__body"><strong>{entry.data.title}</strong></span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+    <a class="home-more llm-wiki-all" href="/wiki/">查看全部 {entries.length} 条知识库词条 →</a>
+  </div>
+</BaseLayout>
