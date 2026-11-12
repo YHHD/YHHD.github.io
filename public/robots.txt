@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yhhd.github.io/sitemap-index.xml

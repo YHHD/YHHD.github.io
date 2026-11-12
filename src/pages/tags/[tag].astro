@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Icon from '../../components/Icon.astro';
+import { getPosts, getWiki, tagCounts } from '../../lib/content';
+import { formatDate, tagSlug } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const wiki = await getWiki();
+  const tags = tagCounts([...posts, ...wiki]).map(([tag]) => tag);
+  return tags.map((tag) => ({
+    params: { tag: tagSlug(tag) },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const posts = (await getPosts()).filter((post) => post.data.tags.includes(tag));
+const wiki = (await getWiki()).filter((entry) => entry.data.tags.includes(tag));
+const total = posts.length + wiki.length;
+---
+
+<BaseLayout title={`#${tag}`} description={`标记为 ${tag} 的文章和知识词条。`} noindex>
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero__inner">
+        <div>
+          <span class="eyebrow">Tag</span>
+          <h1>#{tag}</h1>
+          <p>共 {total} 条内容。文章按时间排列，知识词条按更新时间排列。</p>
+        </div>
+        <aside class="page-hero__aside">
+          <strong>{posts.length} 篇文章 · {wiki.length} 条词条</strong>
+          <a class="text-link" href="/tags/" style="margin-top: 10px;">返回全部标签 <Icon name="arrow-right" /></a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    {posts.length > 0 && (
+      <section class="tag-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">Articles</span><h2>文章</h2></div>
+        </div>
+        <div class="posts-list">{posts.map((post) => <PostCard post={post} />)}</div>
+      </section>
+    )}
+
+    {wiki.length > 0 && (
+      <section class="tag-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">Knowledge</span><h2>知识库</h2></div>
+        </div>
+        <div class="tag-wiki-list">
+          {wiki.map((entry) => (
+            <a class="tag-wiki-item" href={`/wiki/${entry.id}/`}>
+              <span>{entry.data.category}</span>
+              <strong>{entry.data.title}</strong>
+              <small>{entry.data.description}</small>
+              <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {total === 0 && <div class="empty-state">这个标签下暂时没有内容。</div>}
+  </div>
+</BaseLayout>

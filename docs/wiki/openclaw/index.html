@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>OpenClaw：个人 AI 助手平台架构解析 · YHHD Notes</title><meta name="description" content="个人 AI 助手平台的架构、运行原理和扩展边界。"><link rel="canonical" href="https://yhhd.github.io/wiki/openclaw/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#f6f5f4" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#191918" media="(prefers-color-scheme: dark)"><meta property="og:type" content="article"><meta property="og:title" content="OpenClaw：个人 AI 助手平台架构解析 · YHHD Notes"><meta property="og:description" content="个人 AI 助手平台的架构、运行原理和扩展边界。"><meta property="og:url" content="https://yhhd.github.io/wiki/openclaw/"><meta property="og:site_name" content="YHHD Notes"><meta property="og:image" content="https://yhhd.github.io/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="OpenClaw：个人 AI 助手平台架构解析 · YHHD Notes"><meta name="twitter:description" content="个人 AI 助手平台的架构、运行原理和扩展边界。"><meta property="article:published_time" content="2026-04-08T00:00:00.000Z"><link rel="alternate" type="application/rss+xml" title="YHHD Notes RSS" href="/rss.xml"><script>
+      (() => {
+        try {
+          const stored = localStorage.getItem('yhhd-theme');
+          const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = stored || preferred;
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.DRwjVDLy.css"></head><body class><a class="skip-link" href="#main">跳到正文</a><div class="reading-progress" aria-hidden="true"><div class="reading-progress__bar" data-reading-progress></div></div><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="YHHD Notes 首页"><span class="brand-mark" aria-hidden="true"><span>YH</span></span><span class="brand-copy"><span class="brand-name">YHHD</span><span class="brand-tag">notes / 2026</span></span></a><nav class="main-nav" aria-label="主导航"><a class="nav-link" href="/posts/">文章</a><a class="nav-link" href="/wiki/" aria-current="page">知识库</a><a class="nav-link" href="/archives/">归档</a><a class="nav-link" href="/about/">关于</a></nav><div class="nav-actions"><button class="icon-button" type="button" data-search-open aria-label="搜索全站"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button><button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换明暗主题" aria-pressed="false"><svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg><svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.1A8.4 8.4 0 0 1 9.9 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></button><button class="menu-button" type="button" data-menu-toggle aria-label="打开导航" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header><nav class="mobile-nav" data-mobile-nav aria-label="移动端导航"><a href="/posts/">文章</a><a href="/wiki/" aria-current="page">知识库</a><a href="/archives/">归档</a><a href="/about/">关于</a></nav><script type="module">var e=document.querySelector(`[data-theme-toggle]`),t=()=>{e?.setAttribute(`aria-pressed`,String(document.documentElement.dataset.theme===`dark`))};t(),e?.addEventListener(`click`,()=>{let e=document.documentElement,n=e.dataset.theme===`dark`?`light`:`dark`;e.dataset.theme=n,localStorage.setItem(`yhhd-theme`,n),t()});var n=document.querySelector(`[data-menu-toggle]`),r=document.querySelector(`[data-mobile-nav]`);n?.addEventListener(`click`,()=>{let e=r?.classList.toggle(`is-open`)??!1;n.setAttribute(`aria-expanded`,String(e)),n.setAttribute(`aria-label`,e?`关闭导航`:`打开导航`)}),r?.querySelectorAll(`a`).forEach(e=>{e.addEventListener(`click`,()=>{r.classList.remove(`is-open`),n?.setAttribute(`aria-expanded`,`false`),n?.setAttribute(`aria-label`,`打开导航`)})}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&r?.classList.contains(`is-open`)&&(r.classList.remove(`is-open`),n?.setAttribute(`aria-expanded`,`false`),n?.focus())});</script><main id="main"><div class="container article-page" data-reading-scope><nav class="breadcrumb" aria-label="面包屑"><a href="/wiki/">知识库</a><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>技术手册</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>词条</span></nav><header class="article-header"><div class="meta-row"><span>技术手册</span><span class="dot"></span><time datetime="2026-04-08">2026年4月8日</time><span class="dot"></span><span>887 字</span><span class="dot"></span><span>阅读约 3 分钟</span></div><h1>OpenClaw：个人 AI 助手平台架构解析</h1><p class="article-header__description">个人 AI 助手平台的架构、运行原理和扩展边界。</p><div class="tag-row"><a class="tag" href="/tags/ai/">#AI</a><a class="tag" href="/tags/agent/">#Agent</a><a class="tag" href="/tags/开源/">#开源</a><a class="tag" href="/tags/架构/">#架构</a></div></header><div class="article-grid"><div class="article-main"><details class="mobile-toc"><summary>目录 · 11 节</summary><nav><a href="#是什么">是什么</a><a href="#整体架构">整体架构</a><a href="#核心组件">核心组件</a><a href="#渠道适配器channel-adapter" class="depth-3">渠道适配器（Channel Adapter）</a><a href="#agent-运行时每轮对话四步" class="depth-3">Agent 运行时（每轮对话四步）</a><a href="#系统提示词架构" class="depth-3">系统提示词架构</a><a href="#插件系统" class="depth-3">插件系统</a><a href="#canvas--a2ui" class="depth-3">Canvas / A2UI</a><a href="#应用场景">应用场景</a><a href="#局限性">局限性</a><a href="#与其他方案的对比">与其他方案的对比</a></nav></details><article class="post-prose"><h2 id="是什么">是什么</h2>
+<p>OpenClaw 是一个运行在个人设备上的 AI Agent 操作系统，将 AI 模型与各种工具连接到日常聊天 App（WhatsApp、Telegram、飞书、钉钉等）。</p>
+<p>核心理念：<strong>把 AI 助手当作基础设施构建</strong>，而不只是优化提示词。
+所有会话状态、工具执行、调度逻辑留在自己设备上；AI 模型 API 调用仍走 Anthropic/OpenAI 等服务商。</p>
+<p>GitHub：18 万 star，史上增长最快的开源项目之一，核心开发者只有一人。</p>
+<hr>
+<h2 id="整体架构">整体架构</h2>
+<p>调度中心模式，两大核心模块：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>网关 Gateway</strong></td>
+<td>WebSocket 服务器，连接各聊天平台，将消息派发给 Agent 处理</td>
+</tr>
+<tr>
+<td><strong>智能体 Agent</strong></td>
+<td>组装上下文、调用 AI 模型、执行工具、保存状态</td>
+</tr>
+</tbody>
+</table>
+<p>关键设计思想：消息通信层与 AI 执行层彻底分离。</p>
+<hr>
+<h2 id="核心组件">核心组件</h2>
+<h3 id="渠道适配器channel-adapter">渠道适配器（Channel Adapter）</h3>
+<p>每个聊天平台一个专属适配器，统一完成四件事：身份验证 → 收消息解析 → 访问控制 → 发消息格式化。</p>
+<p>访问控制包括：白名单、私聊策略（配对/开放/禁止）、群聊策略（仅被 @ 时回复）。</p>
+<h3 id="agent-运行时每轮对话四步">Agent 运行时（每轮对话四步）</h3>
+<ol>
+<li><strong>会话确定</strong>：判断消息所属会话（main / dm:平台:ID / group:平台:ID），会话同时是安全边界</li>
+<li><strong>上下文组装</strong>：加载历史记录 + 读取工作空间配置文件 + 语义搜索记忆库</li>
+<li><strong>执行循环</strong>：监控模型输出，拦截工具调用请求（命令行/浏览器/文件）并执行，将结果实时回传给模型</li>
+<li><strong>保存状态</strong>：把消息和工具调用结果存回磁盘</li>
+</ol>
+<h3 id="系统提示词架构">系统提示词架构</h3>
+<p>提示词由多个来源动态拼装，<strong>不是写死的文件</strong>：</p>
+<ul>
+<li><code>AGENTS.md</code>：核心规则（能做什么/不能做什么）</li>
+<li><code>SOUL.md</code>：人格语气（可选）</li>
+<li><code>TOOLS.md</code>：工具备注（可选）</li>
+<li>动态上下文：会话历史、相关技能文件、语义搜索到的历史对话</li>
+<li>工具定义：内置工具 + 插件工具（自动生成）</li>
+</ul>
+<p>智能筛选：只注入当前轮次需要的技能，避免提示词过长导致模型性能下降。</p>
+<h3 id="插件系统">插件系统</h3>
+<p>四类扩展，放在 <code>extensions/</code> 目录自动加载，不改核心代码：</p>
+<table>
+<thead>
+<tr>
+<th>插件类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Channel Plugin</td>
+<td>接入新聊天平台</td>
+</tr>
+<tr>
+<td>Memory Plugin</td>
+<td>替换存储后端（如向量数据库替换 SQLite）</td>
+</tr>
+<tr>
+<td>Tool Plugin</td>
+<td>添加自定义工具能力</td>
+</tr>
+<tr>
+<td>Provider Plugin</td>
+<td>接入自定义/本地部署 AI 模型</td>
+</tr>
+</tbody>
+</table>
+<h3 id="canvas--a2ui">Canvas / A2UI</h3>
+<p>AI 驱动的可视化工作区。Agent 生成带特殊标记的 HTML，即可在画布上渲染可交互界面（按钮、列表、表单），用户操作反馈给 AI。独立运行（默认端口 18793），与主网关解耦。</p>
+<hr>
+<h2 id="应用场景">应用场景</h2>
+<ul>
+<li>自托管 AI 助手，数据完全本地化</li>
+<li>多平台统一接入（一个助手同时在 Telegram、WhatsApp、飞书响应）</li>
+<li>通过插件扩展 Agent 能力（自定义工具、记忆后端）</li>
+<li>手机端将摄像头/录屏/定位能力暴露给 Agent</li>
+</ul>
+<hr>
+<h2 id="局限性">局限性</h2>
+<ul>
+<li>一台机器只能跑一个网关（WhatsApp 协议单设备限制）</li>
+<li>语音唤醒仅支持 macOS</li>
+<li>自托管要求一定运维能力</li>
+</ul>
+<hr>
+<h2 id="与其他方案的对比">与其他方案的对比</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>OpenClaw</th>
+<th>普通聊天机器人</th>
+<th>Claude Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>运行位置</td>
+<td>本地设备</td>
+<td>云端</td>
+<td>本地终端</td>
+</tr>
+<tr>
+<td>接入渠道</td>
+<td>多平台聊天 App</td>
+<td>单一平台</td>
+<td>CLI/IDE</td>
+</tr>
+<tr>
+<td>会话状态</td>
+<td>本地持久化</td>
+<td>云端托管</td>
+<td>本地</td>
+</tr>
+<tr>
+<td>主要场景</td>
+<td>个人 AI 助手基础设施</td>
+<td>客服/问答</td>
+<td>编程辅助</td>
+</tr>
+</tbody>
+</table>
+</article><footer class="article-footer"><span class="article-footer__label">Tags</span><div class="tag-row"><a class="tag" href="/tags/ai/">#AI</a><a class="tag" href="/tags/agent/">#Agent</a><a class="tag" href="/tags/开源/">#开源</a><a class="tag" href="/tags/架构/">#架构</a></div><div class="related-wiki"><h2>继续阅读</h2><a href="/wiki/hermes-agent-arch/">Hermes Agent 架构解析 ↗</a><a href="/wiki/claude-code-arch/">Claude Code 源码架构解析 ↗</a><a href="/wiki/vless-reality-troubleshooting/">VLESS + REALITY 节点故障排查 ↗</a><a href="/wiki/ai-tools/">AI 工具：MCP 服务与知识管理 ↗</a></div><nav class="article-nav" aria-label="相邻词条"><a href="/wiki/vless-reality-troubleshooting/"><span>← 上一词条</span><strong>VLESS + REALITY 节点故障排查</strong></a></nav></footer></div><aside class="article-aside"><nav class="toc" aria-label="词条目录"><span class="toc__label">On this page</span><a href="#是什么">是什么</a><a href="#整体架构">整体架构</a><a href="#核心组件">核心组件</a><a href="#渠道适配器channel-adapter" class="depth-3">渠道适配器（Channel Adapter）</a><a href="#agent-运行时每轮对话四步" class="depth-3">Agent 运行时（每轮对话四步）</a><a href="#系统提示词架构" class="depth-3">系统提示词架构</a><a href="#插件系统" class="depth-3">插件系统</a><a href="#canvas--a2ui" class="depth-3">Canvas / A2UI</a><a href="#应用场景">应用场景</a><a href="#局限性">局限性</a><a href="#与其他方案的对比">与其他方案的对比</a></nav></aside></div></div></main><footer class="site-footer"><div class="container"><div class="footer-main"><div class="footer-brand"><span class="brand-mark" aria-hidden="true"><span>YH</span></span><div><strong>YHHD Notes</strong><p>记录软件、智能体与那些值得反复思考的问题。</p></div></div><nav class="footer-links" aria-label="页脚导航"><a href="/posts/">文章</a><a href="/wiki/">知识库</a><a href="/archives/">归档</a><a href="/about/">关于</a><a href="/rss.xml">RSS</a><a href="https://github.com/YHHD" target="_blank" rel="noreferrer">GitHub</a></nav></div><div class="footer-bottom"><span>© 2022–2026 Haohao Yin</span><span>Built with Astro · Hosted on GitHub Pages</span></div></div></footer><dialog class="search-dialog" data-search-dialog aria-label="搜索全站"><div class="search-dialog__top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><label class="sr-only" for="site-search">搜索文章和知识库</label><input class="search-dialog__input" id="site-search" name="q" type="search" placeholder="搜索文章、概念或关键词…" autocomplete="off" spellcheck="false" data-search-input><button class="search-dialog__close" type="button" data-search-close>ESC</button></div><div class="search-results" data-search-results aria-live="polite"><div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div></div></dialog><script type="module">var e=document.querySelector(`[data-search-dialog]`),t=document.querySelector(`[data-search-input]`),n=document.querySelector(`[data-search-results]`),r=[],i=0,a=!1,o=e=>e.replace(/[&<>"']/g,e=>({"&":`&amp;`,"<":`&lt;`,">":`&gt;`,'"':`&quot;`,"'":`&#039;`})[e]??e),s=e=>e.toLowerCase().normalize(`NFKC`),c=(e,t)=>{let n=s(e.title),r=s(e.description),i=s(e.body??``),a=s((e.tags??[]).join(` `)),o=0;return n===t&&(o+=100),n.startsWith(t)&&(o+=50),n.includes(t)&&(o+=30),a.includes(t)&&(o+=18),r.includes(t)&&(o+=10),i.includes(t)&&(o+=3),e.type===`文章`&&(o+=1),o},l=async()=>{if(!(r.length||a)){a=!0;try{let e=await fetch(`/search.json`);if(!e.ok)throw Error(`Search index unavailable`);r=await e.json()}catch{n.innerHTML=`<div class="search-empty">搜索索引暂时不可用，请刷新后再试。</div>`}finally{a=!1}}},u=()=>{if(!n||!t)return;let e=s(t.value.trim());if(!e){i=0,n.innerHTML=`<div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div>`;return}let a=r.map(t=>({item:t,score:c(t,e)})).filter(({score:e})=>e>0).sort((e,t)=>t.score-e.score||(t.item.date??``).localeCompare(e.item.date??``)).slice(0,12).map(({item:e})=>e);a.length?(i=Math.min(i,a.length-1),n.innerHTML=a.map((e,t)=>`
+        <a class="search-result" href="${o(e.href)}" aria-selected="${t===i}">
+          <span class="search-result__icon">
+            ${e.type===`文章`?`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 5 4 4L8 20l-5 1 1-5Z"/><path d="m13 7 4 4"/></svg>`:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="m6 7 4 3M18 7l-4 3M12 15v3"/></svg>`}
+          </span>
+          <span>
+            <strong>${o(e.title)}</strong>
+            <p>${o(e.description)}</p>
+          </span>
+          <span class="search-result__type">${e.type}</span>
+        </a>
+      `).join(``)):n.innerHTML=`<div class="search-empty">没有找到与「${o(t.value.trim())}」相关的内容。</div>`},d=async()=>{e&&(await l(),e.open||e.showModal(),requestAnimationFrame(()=>t?.focus()),u())},f=()=>e?.close();window.addEventListener(`open-search`,d),window.addEventListener(`keydown`,e=>{((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()===`k`||e.key===`/`&&![`INPUT`,`TEXTAREA`].includes(e.target?.tagName))&&(e.preventDefault(),d())}),document.querySelector(`[data-search-close]`)?.addEventListener(`click`,f),document.addEventListener(`click`,e=>{e.target?.closest(`[data-search-open]`)&&d()}),e?.addEventListener(`click`,t=>{t.target===e&&f()}),t?.addEventListener(`input`,()=>{i=0,u()}),t?.addEventListener(`keydown`,e=>{let t=Array.from(n?.querySelectorAll(`.search-result`)??[]);t.length&&(e.key===`ArrowDown`&&(e.preventDefault(),i=(i+1)%t.length,t.forEach((e,t)=>e.setAttribute(`aria-selected`,String(t===i))),t[i].scrollIntoView({block:`nearest`})),e.key===`ArrowUp`&&(e.preventDefault(),i=(i-1+t.length)%t.length,t.forEach((e,t)=>e.setAttribute(`aria-selected`,String(t===i))),t[i].scrollIntoView({block:`nearest`})),e.key===`Enter`&&(e.preventDefault(),t[i]?.click()))});</script><script type="module">var e=document.querySelector(`[data-reading-progress]`),t=()=>{if(!e)return;let t=document.querySelector(`[data-reading-scope]`);if(!t){e.style.width=`0%`;return}let n=t.offsetTop,r=n+t.offsetHeight-window.innerHeight,i=r<=n?100:(window.scrollY-n)/(r-n)*100;e.style.width=`${Math.min(100,Math.max(0,i))}%`};t(),window.addEventListener(`scroll`,t,{passive:!0}),window.addEventListener(`resize`,t),document.querySelectorAll(`.post-prose pre`).forEach(e=>{if(e.querySelector(`.copy-code`))return;let t=document.createElement(`button`);t.className=`copy-code`,t.type=`button`,t.textContent=`复制`,t.addEventListener(`click`,async()=>{let n=e.querySelector(`code`)?.textContent??``;try{await navigator.clipboard.writeText(n),t.textContent=`已复制`}catch{t.textContent=`失败`}window.setTimeout(()=>t.textContent=`复制`,1500)}),e.append(t)}),(()=>{let e=[...document.querySelectorAll(`.toc a[href^="#"]`)],t=e.map(e=>document.querySelector(e.getAttribute(`href`)??``)).filter(e=>!!e);if(!e.length||!t.length)return;let n=new IntersectionObserver(t=>{let n=t.filter(e=>e.isIntersecting).sort((e,t)=>e.boundingClientRect.top-t.boundingClientRect.top)[0];n&&e.forEach(e=>e.classList.toggle(`is-active`,e.getAttribute(`href`)===`#${n.target.id}`))},{rootMargin:`-96px 0px -72% 0px`,threshold:[0,1]});t.forEach(e=>n.observe(e))})();</script></body></html>

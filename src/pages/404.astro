@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="页面不存在" description="这个页面不存在或已经移动。" noindex>
+  <div class="container not-found">
+    <div>
+      <span class="not-found__code">404 / NOT FOUND</span>
+      <h1>这个页面走丢了。</h1>
+      <p>可能是链接已经移动，也可能是在整理知识时被合并进了另一条词条。</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a class="button button--primary" href="/">返回首页 <Icon name="arrow-right" /></a>
+        <button class="button" type="button" data-search-open><Icon name="search" /> 搜索全站</button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,26 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { legacy: 'hello-world' } },
+    { params: { legacy: '我的第一篇文章' } },
+  ];
+}
+
+const { legacy } = Astro.params;
+const target = legacy === 'hello-world' ? '/posts/building-a-knowledge-first-blog/' : '/posts/';
+const canonical = new URL(target, Astro.site ?? 'https://yhhd.github.io');
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={canonical} />
+    <title>页面已移动</title>
+  </head>
+  <body>
+    <p>旧页面已经移动，正在前往 <a href={target}>新位置</a>。</p>
+  </body>
+</html>

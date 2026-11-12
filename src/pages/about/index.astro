@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { SITE } from '../../lib/site';
+---
+
+<BaseLayout title="关于" description="关于 YHHD、这个站点，以及正在构建的项目。">
+  <div class="container about-grid">
+    <aside class="about-sidebar">
+      <div class="profile-card">
+        <div class="profile-avatar"><img src="/avatar.jpg" alt="YHHD 的 GitHub 头像" width="460" height="460" loading="lazy" decoding="async" /></div>
+        <p class="profile-name">{SITE.author}</p>
+        <p>@{SITE.handle} · Builder / Learner</p>
+        <div class="profile-links">
+          <a href={SITE.github} target="_blank" rel="noreferrer"><span>GitHub</span><Icon name="arrow-up-right" /></a>
+          <a href="/rss.xml"><span>RSS Feed</span><Icon name="rss" /></a>
+          <a href="/posts/"><span>全部文章</span><Icon name="arrow-right" /></a>
+          <a href="/wiki/"><span>知识库</span><Icon name="arrow-right" /></a>
+        </div>
+      </div>
+    </aside>
+
+    <article class="about-content">
+      <span class="eyebrow">About</span>
+      <h1>写代码，也把做过的事写清楚。</h1>
+      <p>
+        我是 {SITE.author}，关注 AI Agent、后端系统与开发者工具。这个站点用于记录工程实践、架构理解和长期研究，不追求高频更新，更在意内容过一段时间之后是否仍然有用。
+      </p>
+      <p>
+        我把内容分成两层：文章用来展开一个有始有终的问题；知识库用来沉淀会持续修订的概念、方案和资料。两者共享标签，但不会互相替代。
+      </p>
+
+      <h2>关注方向</h2>
+      <div class="capability-grid">
+        <div class="capability">
+          <strong>AI 工程与 Agent</strong>
+          <p>工具调用、上下文装配、权限边界、多 Agent 协作与评测。</p>
+        </div>
+        <div class="capability">
+          <strong>后端与系统设计</strong>
+          <p>TypeScript / NestJS、PostgreSQL、任务系统与可观测性。</p>
+        </div>
+        <div class="capability">
+          <strong>开发者工具</strong>
+          <p>把重复流程变成可验证的工具，而不是停留在脚本集合。</p>
+        </div>
+        <div class="capability">
+          <strong>知识系统</strong>
+          <p>Markdown、可检索内容、静态发布与个人知识工作流。</p>
+        </div>
+      </div>
+
+      <h2>正在做</h2>
+      <ul>
+        <li><strong>TPS Bench</strong>：本地 LLM API 测速台，记录 TTFT、解码 TPS 和端到端吞吐。</li>
+        <li><strong>抖音矩阵</strong>：从数据抓取、文案生成、图片渲染到飞书推送的 AI 内容流水线。</li>
+        <li><strong>YHHD Notes</strong>：把文章、Wiki 式词条和项目资料放进同一套可维护的静态站。</li>
+      </ul>
+
+      <h2>关于这个站点</h2>
+      <p>
+        站点使用 Astro 构建，内容保存在 Markdown 中，最终以静态文件发布到 GitHub Pages。视觉规范来自 <code>DESIGN.md</code> 的 Notion 风格分析：暖灰纸面、单一蓝色强调、细边框和克制动效。字体与搜索索引都随站点本地发布，中国大陆访问不依赖外部字体 CDN。
+      </p>
+      <p>
+        信息架构参考了青蛙小白的 Wiki：知识库采用高密度双栏目录，文章保持窄阅读栏，顶部导航始终轻量。代码是这套体验的实现，不是目的。
+      </p>
+
+      <h2>联系</h2>
+      <p>
+        如果你对某个项目、文章或词条有不同判断，欢迎在 <a href={SITE.github} target="_blank" rel="noreferrer">GitHub</a> 找到我。这个站点暂时没有接入评论系统，RSS 是获取新内容最稳定的方式。
+      </p>
+    </article>
+  </div>
+</BaseLayout>

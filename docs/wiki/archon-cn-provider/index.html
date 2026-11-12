@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Archon 国内服务商扩展方案 · YHHD Notes</title><meta name="description" content="让 Archon 接入国内 LLM 与 Embedding 服务商的扩展方案。"><link rel="canonical" href="https://yhhd.github.io/wiki/archon-cn-provider/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#f6f5f4" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#191918" media="(prefers-color-scheme: dark)"><meta property="og:type" content="article"><meta property="og:title" content="Archon 国内服务商扩展方案 · YHHD Notes"><meta property="og:description" content="让 Archon 接入国内 LLM 与 Embedding 服务商的扩展方案。"><meta property="og:url" content="https://yhhd.github.io/wiki/archon-cn-provider/"><meta property="og:site_name" content="YHHD Notes"><meta property="og:image" content="https://yhhd.github.io/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Archon 国内服务商扩展方案 · YHHD Notes"><meta name="twitter:description" content="让 Archon 接入国内 LLM 与 Embedding 服务商的扩展方案。"><meta property="article:published_time" content="2026-04-09T00:00:00.000Z"><link rel="alternate" type="application/rss+xml" title="YHHD Notes RSS" href="/rss.xml"><script>
+      (() => {
+        try {
+          const stored = localStorage.getItem('yhhd-theme');
+          const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = stored || preferred;
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.DRwjVDLy.css"></head><body class><a class="skip-link" href="#main">跳到正文</a><div class="reading-progress" aria-hidden="true"><div class="reading-progress__bar" data-reading-progress></div></div><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="YHHD Notes 首页"><span class="brand-mark" aria-hidden="true"><span>YH</span></span><span class="brand-copy"><span class="brand-name">YHHD</span><span class="brand-tag">notes / 2026</span></span></a><nav class="main-nav" aria-label="主导航"><a class="nav-link" href="/posts/">文章</a><a class="nav-link" href="/wiki/" aria-current="page">知识库</a><a class="nav-link" href="/archives/">归档</a><a class="nav-link" href="/about/">关于</a></nav><div class="nav-actions"><button class="icon-button" type="button" data-search-open aria-label="搜索全站"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button><button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="切换明暗主题" aria-pressed="false"><svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg><svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.1A8.4 8.4 0 0 1 9.9 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></button><button class="menu-button" type="button" data-menu-toggle aria-label="打开导航" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header><nav class="mobile-nav" data-mobile-nav aria-label="移动端导航"><a href="/posts/">文章</a><a href="/wiki/" aria-current="page">知识库</a><a href="/archives/">归档</a><a href="/about/">关于</a></nav><script type="module">var e=document.querySelector(`[data-theme-toggle]`),t=()=>{e?.setAttribute(`aria-pressed`,String(document.documentElement.dataset.theme===`dark`))};t(),e?.addEventListener(`click`,()=>{let e=document.documentElement,n=e.dataset.theme===`dark`?`light`:`dark`;e.dataset.theme=n,localStorage.setItem(`yhhd-theme`,n),t()});var n=document.querySelector(`[data-menu-toggle]`),r=document.querySelector(`[data-mobile-nav]`);n?.addEventListener(`click`,()=>{let e=r?.classList.toggle(`is-open`)??!1;n.setAttribute(`aria-expanded`,String(e)),n.setAttribute(`aria-label`,e?`关闭导航`:`打开导航`)}),r?.querySelectorAll(`a`).forEach(e=>{e.addEventListener(`click`,()=>{r.classList.remove(`is-open`),n?.setAttribute(`aria-expanded`,`false`),n?.setAttribute(`aria-label`,`打开导航`)})}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&r?.classList.contains(`is-open`)&&(r.classList.remove(`is-open`),n?.setAttribute(`aria-expanded`,`false`),n?.focus())});</script><main id="main"><div class="container article-page" data-reading-scope><nav class="breadcrumb" aria-label="面包屑"><a href="/wiki/">知识库</a><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>项目与方案</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>词条</span></nav><header class="article-header"><div class="meta-row"><span>项目与方案</span><span class="dot"></span><time datetime="2026-04-09">2026年4月9日</time><span class="dot"></span><span>530 字</span><span class="dot"></span><span>阅读约 2 分钟</span></div><h1>Archon 国内服务商扩展方案</h1><p class="article-header__description">让 Archon 接入国内 LLM 与 Embedding 服务商的扩展方案。</p><div class="tag-row"><a class="tag" href="/tags/ai/">#AI</a><a class="tag" href="/tags/archon/">#Archon</a><a class="tag" href="/tags/mcp/">#MCP</a><a class="tag" href="/tags/服务商/">#服务商</a></div></header><div class="article-grid"><div class="article-main"><details class="mobile-toc"><summary>目录 · 16 节</summary><nav><a href="#背景">背景</a><a href="#阶段一零代码接入llm--部分-embedding">阶段一：零代码接入（LLM + 部分 Embedding）</a><a href="#适用范围" class="depth-3">适用范围</a><a href="#国内兼容服务商清单" class="depth-3">国内兼容服务商清单</a><a href="#配置步骤" class="depth-3">配置步骤</a><a href="#阶段二代码扩展非兼容服务商原生适配器">阶段二：代码扩展（非兼容服务商原生适配器）</a><a href="#目标服务商" class="depth-3">目标服务商</a><a href="#实现路径" class="depth-3">实现路径</a><a href="#需修改的文件" class="depth-3">需修改的文件</a><a href="#阶段三docker-自定义镜像部署">阶段三：Docker 自定义镜像部署</a><a href="#方案" class="depth-3">方案</a><a href="#dockerfile-修改点" class="depth-3">Dockerfile 修改点</a><a href="#docker-compose-接入" class="depth-3">docker-compose 接入</a><a href="#部署流程" class="depth-3">部署流程</a><a href="#踩坑预判">踩坑预判</a><a href="#进度">进度</a></nav></details><article class="post-prose"><p><strong>目标</strong>：让 Archon 支持国内 LLM 和词嵌入服务商，消除对 OpenAI 的硬依赖</p>
+<h2 id="背景">背景</h2>
+<p>Archon 使用 OpenAI Python SDK 作为统一客户端，通过 <code>base_url</code> 切换 LLM 服务商。词嵌入部分有适配器架构（<code>OpenAICompatibleEmbeddingAdapter</code> / <code>GoogleEmbeddingAdapter</code>），但目前没有国内服务商的原生适配器。</p>
+<p>配置通过 Archon UI（Settings 页）写入数据库，不依赖 <code>.env</code>。</p>
+<hr>
+<h2 id="阶段一零代码接入llm--部分-embedding">阶段一：零代码接入（LLM + 部分 Embedding）</h2>
+<h3 id="适用范围">适用范围</h3>
+<p>凡提供 OpenAI 兼容接口的服务商，直接在 Archon UI 填写 <code>base_url</code> + <code>api_key</code> 即可使用。</p>
+<h3 id="国内兼容服务商清单">国内兼容服务商清单</h3>
+<table>
+<thead>
+<tr>
+<th>服务商</th>
+<th>base_url</th>
+<th>支持 LLM</th>
+<th>支持 Embedding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DeepSeek</td>
+<td><code>https://api.deepseek.com/v1</code></td>
+<td>✅ deepseek-chat / reasoner</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>硅基流动 SiliconFlow</td>
+<td><code>https://api.siliconflow.cn/v1</code></td>
+<td>✅ Qwen / DeepSeek 等</td>
+<td>✅ BAAI/bge-m3 等</td>
+</tr>
+<tr>
+<td>月之暗面 Moonshot</td>
+<td><code>https://api.moonshot.cn/v1</code></td>
+<td>✅ moonshot-v1-*</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>智谱 AI</td>
+<td><code>https://open.bigmodel.cn/api/paas/v4</code></td>
+<td>✅ GLM-4</td>
+<td>⚠️ 部分兼容</td>
+</tr>
+<tr>
+<td>豆包 (火山引擎)</td>
+<td><code>https://ark.cn-beijing.volces.com/api/v3</code></td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最优推荐（阶段一）</strong>：</p>
+<ul>
+<li>LLM：DeepSeek（性价比最高）</li>
+<li>Embedding：硅基流动 + <code>BAAI/bge-m3</code>（OpenAI 兼容，中文效果好）</li>
+</ul>
+<h3 id="配置步骤">配置步骤</h3>
+<ol>
+<li>打开 Archon UI → Settings → LLM Provider</li>
+<li>选择 <code>openai</code>，填入国内服务商的 <code>base_url</code> 和 <code>api_key</code></li>
+<li>Embedding 同理，选择 <code>openai</code>，填入硅基流动的地址和模型名</li>
+</ol>
+<hr>
+<h2 id="阶段二代码扩展非兼容服务商原生适配器">阶段二：代码扩展（非兼容服务商原生适配器）</h2>
+<h3 id="目标服务商">目标服务商</h3>
+<table>
+<thead>
+<tr>
+<th>服务商</th>
+<th>Embedding API</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>阿里云 DashScope</td>
+<td><code>text-embedding-v3</code></td>
+<td>企业级，阿里生态用户</td>
+</tr>
+<tr>
+<td>智谱 AI</td>
+<td><code>embedding-3</code></td>
+<td>中文专优，非标准接口</td>
+</tr>
+<tr>
+<td>百度文心</td>
+<td><code>Embedding-V1</code></td>
+<td>百度生态</td>
+</tr>
+</tbody>
+</table>
+<h3 id="实现路径">实现路径</h3>
+<p>参考 Archon 现有架构（<code>embedding_service.py</code>），新增适配器类：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># python/src/server/services/embeddings/dashscope_adapter.py</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> DashScopeEmbeddingAdapter</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#9ECBFF">    """阿里云 DashScope 词嵌入适配器"""</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    def</span><span style="color:#79B8FF"> __init__</span><span style="color:#E1E4E8">(self, api_key: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.api_key </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> api_key</span></span>
+<span class="line"><span style="color:#79B8FF">        self</span><span style="color:#E1E4E8">.base_url </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "https://dashscope.aliyuncs.com/compatible-mode/v1"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    async</span><span style="color:#F97583"> def</span><span style="color:#B392F0"> embed</span><span style="color:#E1E4E8">(self, texts: list[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">], model: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> "text-embedding-v3"</span><span style="color:#E1E4E8">) -&gt; list[list[</span><span style="color:#79B8FF">float</span><span style="color:#E1E4E8">]]:</span></span>
+<span class="line"><span style="color:#6A737D">        # DashScope 有 OpenAI 兼容模式，可复用 OpenAICompatibleEmbeddingAdapter</span></span>
+<span class="line"><span style="color:#79B8FF">        ...</span></span></code></pre>
+<blockquote>
+<p>注：DashScope 已提供 OpenAI 兼容端点，优先复用现有适配器，仅需注册新 provider 名称。</p>
+</blockquote>
+<h3 id="需修改的文件">需修改的文件</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>python/src/server/services/embeddings/</span></span>
+<span class="line"><span>├── embedding_service.py       # 注册新 provider</span></span>
+<span class="line"><span>├── dashscope_adapter.py       # 新增</span></span>
+<span class="line"><span>├── zhipu_adapter.py           # 新增（如需）</span></span>
+<span class="line"><span>└── baidu_adapter.py           # 新增（如需）</span></span></code></pre>
+<hr>
+<h2 id="阶段三docker-自定义镜像部署">阶段三：Docker 自定义镜像部署</h2>
+<h3 id="方案">方案</h3>
+<p>Fork <code>coleam00/archon</code> → 添加适配器代码 → 构建自定义镜像 → 替换原镜像。</p>
+<h3 id="dockerfile-修改点">Dockerfile 修改点</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="dockerfile"><code><span class="line"><span style="color:#6A737D"># 基于官方镜像，仅叠加修改</span></span>
+<span class="line"><span style="color:#F97583">FROM</span><span style="color:#E1E4E8"> coleam00/archon:latest</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 复制自定义适配器</span></span>
+<span class="line"><span style="color:#F97583">COPY</span><span style="color:#E1E4E8"> python/src/server/services/embeddings/ \</span></span>
+<span class="line"><span style="color:#E1E4E8">     /app/python/src/server/services/embeddings/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 安装额外依赖（如有）</span></span>
+<span class="line"><span style="color:#F97583">RUN</span><span style="color:#E1E4E8"> pip install dashscope</span></span></code></pre>
+<h3 id="docker-compose-接入">docker-compose 接入</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">services</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">  archon</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#85E89D">    build</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">.</span><span style="color:#6A737D">                          # 使用自定义 Dockerfile</span></span>
+<span class="line"><span style="color:#6A737D">    # image: coleam00/archon:latest   # 注释掉官方镜像</span></span>
+<span class="line"><span style="color:#85E89D">    env_file</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">.env</span></span>
+<span class="line"><span style="color:#85E89D">    ports</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">      - </span><span style="color:#9ECBFF">"3737:3737"</span></span>
+<span class="line"><span style="color:#E1E4E8">      - </span><span style="color:#9ECBFF">"8080:8080"</span></span></code></pre>
+<h3 id="部署流程">部署流程</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 1. Fork 并克隆</span></span>
+<span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> clone</span><span style="color:#9ECBFF"> https://github.com/YOUR_NAME/archon</span></span>
+<span class="line"><span style="color:#79B8FF">cd</span><span style="color:#9ECBFF"> archon</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 2. 添加适配器代码（见阶段二）</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 3. 构建镜像</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> build</span><span style="color:#79B8FF"> -t</span><span style="color:#9ECBFF"> my-archon:latest</span><span style="color:#9ECBFF"> .</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 4. 启动</span></span>
+<span class="line"><span style="color:#B392F0">docker-compose</span><span style="color:#9ECBFF"> up</span><span style="color:#79B8FF"> -d</span></span></code></pre>
+<hr>
+<h2 id="踩坑预判">踩坑预判</h2>
+<ul>
+<li><strong>DashScope Embedding 维度</strong>：<code>text-embedding-v3</code> 默认 1536 维，与 Supabase 中 pgvector 列定义需匹配（<code>vector(1536)</code>）</li>
+<li><strong>智谱 Embedding</strong>：<code>embedding-3</code> 为 2048 维，若已有 OpenAI 1536 维数据，需重建向量表</li>
+<li><strong>Rate Limit</strong>：国内服务商 RPM 限制各异，DeepSeek 高峰期限流明显，建议配置重试逻辑</li>
+</ul>
+<hr>
+<h2 id="进度">进度</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 阶段一：在 Archon UI 配置硅基流动 Embedding</li>
+<li class="task-list-item"><input type="checkbox" disabled> 阶段一：验证 RAG 检索可用</li>
+<li class="task-list-item"><input type="checkbox" disabled> 阶段二：实现 DashScope 适配器</li>
+<li class="task-list-item"><input type="checkbox" disabled> 阶段三：构建自定义 Docker 镜像</li>
+</ul>
+</article><footer class="article-footer"><span class="article-footer__label">Tags</span><div class="tag-row"><a class="tag" href="/tags/ai/">#AI</a><a class="tag" href="/tags/archon/">#Archon</a><a class="tag" href="/tags/mcp/">#MCP</a><a class="tag" href="/tags/服务商/">#服务商</a></div><div class="related-wiki"><h2>继续阅读</h2><a href="/wiki/ai-tools/">AI 工具：MCP 服务与知识管理 ↗</a><a href="/wiki/wiki-setup/">个人 Wiki 搭建 ↗</a><a href="/wiki/hermes-agent-arch/">Hermes Agent 架构解析 ↗</a><a href="/wiki/claude-code-arch/">Claude Code 源码架构解析 ↗</a></div><nav class="article-nav" aria-label="相邻词条"><a href="/wiki/wiki-setup/"><span>下一词条 →</span><strong>个人 Wiki 搭建</strong></a></nav></footer></div><aside class="article-aside"><nav class="toc" aria-label="词条目录"><span class="toc__label">On this page</span><a href="#背景">背景</a><a href="#阶段一零代码接入llm--部分-embedding">阶段一：零代码接入（LLM + 部分 Embedding）</a><a href="#适用范围" class="depth-3">适用范围</a><a href="#国内兼容服务商清单" class="depth-3">国内兼容服务商清单</a><a href="#配置步骤" class="depth-3">配置步骤</a><a href="#阶段二代码扩展非兼容服务商原生适配器">阶段二：代码扩展（非兼容服务商原生适配器）</a><a href="#目标服务商" class="depth-3">目标服务商</a><a href="#实现路径" class="depth-3">实现路径</a><a href="#需修改的文件" class="depth-3">需修改的文件</a><a href="#阶段三docker-自定义镜像部署">阶段三：Docker 自定义镜像部署</a><a href="#方案" class="depth-3">方案</a><a href="#dockerfile-修改点" class="depth-3">Dockerfile 修改点</a><a href="#docker-compose-接入" class="depth-3">docker-compose 接入</a><a href="#部署流程" class="depth-3">部署流程</a><a href="#踩坑预判">踩坑预判</a><a href="#进度">进度</a></nav></aside></div></div></main><footer class="site-footer"><div class="container"><div class="footer-main"><div class="footer-brand"><span class="brand-mark" aria-hidden="true"><span>YH</span></span><div><strong>YHHD Notes</strong><p>记录软件、智能体与那些值得反复思考的问题。</p></div></div><nav class="footer-links" aria-label="页脚导航"><a href="/posts/">文章</a><a href="/wiki/">知识库</a><a href="/archives/">归档</a><a href="/about/">关于</a><a href="/rss.xml">RSS</a><a href="https://github.com/YHHD" target="_blank" rel="noreferrer">GitHub</a></nav></div><div class="footer-bottom"><span>© 2022–2026 Haohao Yin</span><span>Built with Astro · Hosted on GitHub Pages</span></div></div></footer><dialog class="search-dialog" data-search-dialog aria-label="搜索全站"><div class="search-dialog__top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><label class="sr-only" for="site-search">搜索文章和知识库</label><input class="search-dialog__input" id="site-search" name="q" type="search" placeholder="搜索文章、概念或关键词…" autocomplete="off" spellcheck="false" data-search-input><button class="search-dialog__close" type="button" data-search-close>ESC</button></div><div class="search-results" data-search-results aria-live="polite"><div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div></div></dialog><script type="module">var e=document.querySelector(`[data-search-dialog]`),t=document.querySelector(`[data-search-input]`),n=document.querySelector(`[data-search-results]`),r=[],i=0,a=!1,o=e=>e.replace(/[&<>"']/g,e=>({"&":`&amp;`,"<":`&lt;`,">":`&gt;`,'"':`&quot;`,"'":`&#039;`})[e]??e),s=e=>e.toLowerCase().normalize(`NFKC`),c=(e,t)=>{let n=s(e.title),r=s(e.description),i=s(e.body??``),a=s((e.tags??[]).join(` `)),o=0;return n===t&&(o+=100),n.startsWith(t)&&(o+=50),n.includes(t)&&(o+=30),a.includes(t)&&(o+=18),r.includes(t)&&(o+=10),i.includes(t)&&(o+=3),e.type===`文章`&&(o+=1),o},l=async()=>{if(!(r.length||a)){a=!0;try{let e=await fetch(`/search.json`);if(!e.ok)throw Error(`Search index unavailable`);r=await e.json()}catch{n.innerHTML=`<div class="search-empty">搜索索引暂时不可用，请刷新后再试。</div>`}finally{a=!1}}},u=()=>{if(!n||!t)return;let e=s(t.value.trim());if(!e){i=0,n.innerHTML=`<div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div>`;return}let a=r.map(t=>({item:t,score:c(t,e)})).filter(({score:e})=>e>0).sort((e,t)=>t.score-e.score||(t.item.date??``).localeCompare(e.item.date??``)).slice(0,12).map(({item:e})=>e);a.length?(i=Math.min(i,a.length-1),n.innerHTML=a.map((e,t)=>`
+        <a class="search-result" href="${o(e.href)}" aria-selected="${t===i}">
+          <span class="search-result__icon">
+            ${e.type===`文章`?`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 5 4 4L8 20l-5 1 1-5Z"/><path d="m13 7 4 4"/></svg>`:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="m6 7 4 3M18 7l-4 3M12 15v3"/></svg>`}
+          </span>
+          <span>
+            <strong>${o(e.title)}</strong>
+            <p>${o(e.description)}</p>
+          </span>
+          <span class="search-result__type">${e.type}</span>
+        </a>
+      `).join(``)):n.innerHTML=`<div class="search-empty">没有找到与「${o(t.value.trim())}」相关的内容。</div>`},d=async()=>{e&&(await l(),e.open||e.showModal(),requestAnimationFrame(()=>t?.focus()),u())},f=()=>e?.close();window.addEventListener(`open-search`,d),window.addEventListener(`keydown`,e=>{((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()===`k`||e.key===`/`&&![`INPUT`,`TEXTAREA`].includes(e.target?.tagName))&&(e.preventDefault(),d())}),document.querySelector(`[data-search-close]`)?.addEventListener(`click`,f),document.addEventListener(`click`,e=>{e.target?.closest(`[data-search-open]`)&&d()}),e?.addEventListener(`click`,t=>{t.target===e&&f()}),t?.addEventListener(`input`,()=>{i=0,u()}),t?.addEventListener(`keydown`,e=>{let t=Array.from(n?.querySelectorAll(`.search-result`)??[]);t.length&&(e.key===`ArrowDown`&&(e.preventDefault(),i=(i+1)%t.length,t.forEach((e,t)=>e.setAttribute(`aria-selected`,String(t===i))),t[i].scrollIntoView({block:`nearest`})),e.key===`ArrowUp`&&(e.preventDefault(),i=(i-1+t.length)%t.length,t.forEach((e,t)=>e.setAttribute(`aria-selected`,String(t===i))),t[i].scrollIntoView({block:`nearest`})),e.key===`Enter`&&(e.preventDefault(),t[i]?.click()))});</script><script type="module">var e=document.querySelector(`[data-reading-progress]`),t=()=>{if(!e)return;let t=document.querySelector(`[data-reading-scope]`);if(!t){e.style.width=`0%`;return}let n=t.offsetTop,r=n+t.offsetHeight-window.innerHeight,i=r<=n?100:(window.scrollY-n)/(r-n)*100;e.style.width=`${Math.min(100,Math.max(0,i))}%`};t(),window.addEventListener(`scroll`,t,{passive:!0}),window.addEventListener(`resize`,t),document.querySelectorAll(`.post-prose pre`).forEach(e=>{if(e.querySelector(`.copy-code`))return;let t=document.createElement(`button`);t.className=`copy-code`,t.type=`button`,t.textContent=`复制`,t.addEventListener(`click`,async()=>{let n=e.querySelector(`code`)?.textContent??``;try{await navigator.clipboard.writeText(n),t.textContent=`已复制`}catch{t.textContent=`失败`}window.setTimeout(()=>t.textContent=`复制`,1500)}),e.append(t)}),(()=>{let e=[...document.querySelectorAll(`.toc a[href^="#"]`)],t=e.map(e=>document.querySelector(e.getAttribute(`href`)??``)).filter(e=>!!e);if(!e.length||!t.length)return;let n=new IntersectionObserver(t=>{let n=t.filter(e=>e.isIntersecting).sort((e,t)=>e.boundingClientRect.top-t.boundingClientRect.top)[0];n&&e.forEach(e=>e.classList.toggle(`is-active`,e.getAttribute(`href`)===`#${n.target.id}`))},{rootMargin:`-96px 0px -72% 0px`,threshold:[0,1]});t.forEach(e=>n.observe(e))})();</script></body></html>

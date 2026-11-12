@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  basePath: string;
+}
+
+const { currentPage, lastPage, basePath } = Astro.props;
+const href = (page: number) => page === 1 ? `${basePath}/` : `${basePath}/page/${page}/`;
+const pages = [...new Set([1, currentPage - 1, currentPage, currentPage + 1, lastPage])]
+  .filter((page) => page >= 1 && page <= lastPage)
+  .sort((a, b) => a - b);
+---
+
+{lastPage > 1 && (
+  <nav class="pagination" aria-label="文章分页">
+    {currentPage > 1
+      ? <a class="pagination__arrow" href={href(currentPage - 1)} aria-label="上一页"><Icon name="chevron-right" class="flip" /></a>
+      : <span class="pagination__arrow is-disabled"><Icon name="chevron-right" class="flip" /></span>}
+    {pages.map((page, index) => {
+      const previous = pages[index - 1];
+      return (
+        <>
+          {previous && page - previous > 1 && <span class="pagination__ellipsis">…</span>}
+          <a class:list={['pagination__page', { 'is-active': page === currentPage }]} href={href(page)} aria-current={page === currentPage ? 'page' : undefined}>{page}</a>
+        </>
+      );
+    })}
+    {currentPage < lastPage
+      ? <a class="pagination__arrow" href={href(currentPage + 1)} aria-label="下一页"><Icon name="chevron-right" /></a>
+      : <span class="pagination__arrow is-disabled"><Icon name="chevron-right" /></span>}
+  </nav>
+)}

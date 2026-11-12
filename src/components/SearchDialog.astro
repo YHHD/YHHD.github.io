@@ -1,0 +1,161 @@
+---
+import Icon from './Icon.astro';
+---
+
+<dialog class="search-dialog" data-search-dialog aria-label="搜索全站">
+  <div class="search-dialog__top">
+    <Icon name="search" size={18} />
+    <label class="sr-only" for="site-search">搜索文章和知识库</label>
+    <input class="search-dialog__input" id="site-search" name="q" type="search" placeholder="搜索文章、概念或关键词…" autocomplete="off" spellcheck="false" data-search-input />
+    <button class="search-dialog__close" type="button" data-search-close>ESC</button>
+  </div>
+  <div class="search-results" data-search-results aria-live="polite">
+    <div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div>
+  </div>
+</dialog>
+
+<script>
+  type SearchItem = {
+    title: string;
+    description: string;
+    href: string;
+    type: '文章' | '知识库';
+    tags?: string[];
+    date?: string;
+    body?: string;
+  };
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const results = document.querySelector<HTMLElement>('[data-search-results]');
+  let items: SearchItem[] = [];
+  let selected = 0;
+  let loading = false;
+
+  const escapeHtml = (value: string) =>
+    value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char] ?? char);
+
+  const normalize = (value: string) => value.toLowerCase().normalize('NFKC');
+  const score = (item: SearchItem, query: string) => {
+    const title = normalize(item.title);
+    const desc = normalize(item.description);
+    const body = normalize(item.body ?? '');
+    const tags = normalize((item.tags ?? []).join(' '));
+    let value = 0;
+    if (title === query) value += 100;
+    if (title.startsWith(query)) value += 50;
+    if (title.includes(query)) value += 30;
+    if (tags.includes(query)) value += 18;
+    if (desc.includes(query)) value += 10;
+    if (body.includes(query)) value += 3;
+    if (item.type === '文章') value += 1;
+    return value;
+  };
+
+  const load = async () => {
+    if (items.length || loading) return;
+    loading = true;
+    try {
+      const response = await fetch('/search.json');
+      if (!response.ok) throw new Error('Search index unavailable');
+      items = await response.json();
+    } catch {
+      results!.innerHTML = '<div class="search-empty">搜索索引暂时不可用，请刷新后再试。</div>';
+    } finally {
+      loading = false;
+    }
+  };
+
+  const render = () => {
+    if (!results || !input) return;
+    const query = normalize(input.value.trim());
+    if (!query) {
+      selected = 0;
+      results.innerHTML = '<div class="search-hint">输入关键词开始搜索。按 ↑ ↓ 选择，Enter 打开。</div>';
+      return;
+    }
+    const matches = items
+      .map((item) => ({ item, score: score(item, query) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || (b.item.date ?? '').localeCompare(a.item.date ?? ''))
+      .slice(0, 12)
+      .map(({ item }) => item);
+    if (!matches.length) {
+      results.innerHTML = `<div class="search-empty">没有找到与「${escapeHtml(input.value.trim())}」相关的内容。</div>`;
+      return;
+    }
+    selected = Math.min(selected, matches.length - 1);
+    results.innerHTML = matches
+      .map((item, index) => `
+        <a class="search-result" href="${escapeHtml(item.href)}" aria-selected="${index === selected}">
+          <span class="search-result__icon">
+            ${item.type === '文章'
+              ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 5 4 4L8 20l-5 1 1-5Z"/><path d="m13 7 4 4"/></svg>'
+              : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="m6 7 4 3M18 7l-4 3M12 15v3"/></svg>'}
+          </span>
+          <span>
+            <strong>${escapeHtml(item.title)}</strong>
+            <p>${escapeHtml(item.description)}</p>
+          </span>
+          <span class="search-result__type">${item.type}</span>
+        </a>
+      `)
+      .join('');
+  };
+
+  const open = async () => {
+    if (!dialog) return;
+    await load();
+    if (!dialog.open) dialog.showModal();
+    requestAnimationFrame(() => input?.focus());
+    render();
+  };
+
+  const close = () => dialog?.close();
+
+  window.addEventListener('open-search', open);
+  window.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      open();
+      return;
+    }
+    if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement)?.tagName)) {
+      event.preventDefault();
+      open();
+    }
+  });
+
+  document.querySelector('[data-search-close]')?.addEventListener('click', close);
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    if (target?.closest('[data-search-open]')) open();
+  });
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+  input?.addEventListener('input', () => {
+    selected = 0;
+    render();
+  });
+  input?.addEventListener('keydown', (event) => {
+    const nodes = Array.from(results?.querySelectorAll<HTMLAnchorElement>('.search-result') ?? []);
+    if (!nodes.length) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      selected = (selected + 1) % nodes.length;
+      nodes.forEach((node, index) => node.setAttribute('aria-selected', String(index === selected)));
+      nodes[selected].scrollIntoView({ block: 'nearest' });
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      selected = (selected - 1 + nodes.length) % nodes.length;
+      nodes.forEach((node, index) => node.setAttribute('aria-selected', String(index === selected)));
+      nodes[selected].scrollIntoView({ block: 'nearest' });
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      nodes[selected]?.click();
+    }
+  });
+</script>

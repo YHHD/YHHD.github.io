@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, getWiki } from '../../lib/content';
+import { formatDate } from '../../lib/site';
+
+type Item = {
+  title: string;
+  date: Date;
+  href: string;
+  type: '文章' | '知识库';
+};
+
+const posts = await getPosts();
+const wiki = await getWiki();
+const items: Item[] = [
+  ...posts.map((post) => ({ title: post.data.title, date: post.data.date, href: `/posts/${post.id}/`, type: '文章' as const })),
+  ...wiki.map((entry) => ({ title: entry.data.title, date: entry.data.date, href: `/wiki/${entry.id}/`, type: '知识库' as const })),
+].sort((a, b) => b.date.valueOf() - a.date.valueOf());
+
+const years = new Map<number, Map<string, Item[]>>();
+for (const item of items) {
+  const year = item.date.getFullYear();
+  const month = new Intl.DateTimeFormat('zh-CN', { month: 'long' }).format(item.date);
+  const months = years.get(year) ?? new Map<string, Item[]>();
+  const list = months.get(month) ?? [];
+  list.push(item);
+  months.set(month, list);
+  years.set(year, months);
+}
+const sortedYears = [...years.entries()].sort((a, b) => b[0] - a[0]);
+---
+
+<BaseLayout title="归档" description="按时间浏览 YHHD Notes 的全部文章与知识词条。">
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero__inner">
+        <div>
+          <span class="eyebrow">Archive</span>
+          <h1>按时间倒着走。</h1>
+          <p>这里同时收录文章和知识库词条。时间线用于回顾，知识库则负责让内容在需要的时候重新出现。</p>
+        </div>
+        <aside class="page-hero__aside">
+          <strong>{items.length} 条内容 · {sortedYears.length} 个年份</strong>
+          最近一条更新于 {items[0] ? formatDate(items[0].date, 'long') : '尚未发布'}。文章和词条仍保留各自的主入口。
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="archive-list">
+      {sortedYears.map(([year, months]) => (
+        <section class="archive-year">
+          <h2>{year}</h2>
+          {[...months.entries()].map(([month, monthItems]) => (
+            <div class="archive-month">
+              <h3>{month}</h3>
+              <div class="archive-items">
+                {monthItems.map((item) => (
+                  <a class="archive-item" href={item.href}>
+                    <span>{item.title}</span>
+                    <span>{item.type} · {formatDate(item.date)}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

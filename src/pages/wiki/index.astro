@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getWiki, tagCounts } from '../../lib/content';
+import { CATEGORY_STICKER, WIKI_CATEGORY_ORDER, categoryStyle } from '../../lib/site';
+
+const entries = await getWiki();
+const groups = WIKI_CATEGORY_ORDER
+  .map((category) => ({ category, entries: entries.filter((entry) => entry.data.category === category) }))
+  .filter((group) => group.entries.length > 0);
+const tags = tagCounts(entries);
+const graphPositions = [
+  { x: 185, y: 88 },
+  { x: 715, y: 88 },
+  { x: 185, y: 258 },
+  { x: 715, y: 258 },
+];
+---
+
+<BaseLayout title="知识库" description="按主题组织的个人知识库：AI Agent、技术手册、项目方案与研究资料。">
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero__inner">
+        <div>
+          <span class="eyebrow">Knowledge base</span>
+          <h1>在写作之外，<br />维护一套知识。</h1>
+          <p>知识库由持续更新的词条组成。每一条都尽量保留应用场景、边界和与其他系统的差异，而不是只留一个结论。</p>
+        </div>
+        <aside class="page-hero__aside">
+          <strong>{entries.length} 条词条 · {groups.length} 个分区 · {tags.length} 个标签</strong>
+          这里优先收录还会被反复更新、引用或拿来做判断的内容。单次新闻和临时材料会留在文章或归档中。
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="wiki-tools">
+      <label class="search-field">
+        <Icon name="search" />
+        <span class="sr-only">筛选知识库</span>
+        <input type="search" name="filter" placeholder="筛选当前知识库…" data-wiki-filter autocomplete="off" spellcheck="false" />
+      </label>
+      <div class="view-toggle" role="group" aria-label="知识库视图">
+        <button type="button" class="is-active" data-wiki-view="index"><Icon name="list" /> 目录</button>
+        <button type="button" data-wiki-view="graph"><Icon name="network" /> 关系图</button>
+      </div>
+    </div>
+
+    <div class="wiki-graph" data-wiki-graph>
+      <svg viewBox="0 0 900 346" role="img" aria-label="知识库分类关系示意图">
+        <g class="graph-line">
+          <path d="M450 173 185 88M450 173 715 88M450 173 185 258M450 173 715 258M185 88 715 88M185 258 715 258M185 88 185 258M715 88 715 258" />
+        </g>
+        <g class="graph-node" style="--dot: var(--blue)">
+          <circle cx="450" cy="173" r="42" />
+          <text x="450" y="168" text-anchor="middle">YHHD</text>
+          <text x="450" y="185" text-anchor="middle">NOTES</text>
+        </g>
+        {groups.map((group, index) => {
+          const position = graphPositions[index] ?? graphPositions[0];
+          return (
+            <g class="graph-node" style={`--dot: ${CATEGORY_STICKER[group.category] ?? 'var(--blue)'}`}>
+              <circle cx={position.x} cy={position.y} r="36" />
+              <text x={position.x} y={position.y - 3} text-anchor="middle">{group.category}</text>
+              <text x={position.x} y={position.y + 14} text-anchor="middle">{group.entries.length} ENTRIES</text>
+            </g>
+          );
+        })}
+        <text x="450" y="338" text-anchor="middle" fill="var(--faint)" font-family="JetBrains Mono, monospace" font-size="10">STATIC RELATION VIEW · CONTENT LINKS ARE THE REAL GRAPH</text>
+      </svg>
+    </div>
+
+    <div class="wiki-results-note" data-wiki-results-note role="status" aria-live="polite"></div>
+
+    <div class="wiki-categories" data-wiki-index>
+      {groups.map((group) => (
+        <section class="wiki-category" data-wiki-category>
+          <div class="wiki-category__heading">
+            <span class="wiki-category__dot" style={`--dot: ${CATEGORY_STICKER[group.category] ?? 'var(--blue)'}`}></span>
+            <h2>{group.category}</h2>
+            <span class="rule"></span>
+            <span>{String(group.entries.length).padStart(2, '0')}</span>
+          </div>
+          <div class="wiki-entries">
+            {group.entries.map((entry) => (
+              <a
+                class="wiki-entry"
+                href={`/wiki/${entry.id}/`}
+                data-wiki-entry
+                data-search={`${entry.data.title} ${entry.data.description} ${entry.data.tags.join(' ')}`}
+              >
+                <span class="wiki-entry__dot" style={`--dot: ${categoryStyle(entry.data.category).color}`}></span>
+                <span class="wiki-entry__body">
+                  <strong>{entry.data.title}</strong>
+                  <small>{entry.data.description}</small>
+                </span>
+                <span>{entry.data.date.getFullYear()}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+
+  <script>
+    const filter = document.querySelector<HTMLInputElement>('[data-wiki-filter]');
+    const index = document.querySelector<HTMLElement>('[data-wiki-index]');
+    const graph = document.querySelector<HTMLElement>('[data-wiki-graph]');
+    const note = document.querySelector<HTMLElement>('[data-wiki-results-note]');
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-wiki-view]')];
+
+    const setView = (view: string) => {
+      buttons.forEach((button) => button.classList.toggle('is-active', button.dataset.wikiView === view));
+      graph?.classList.toggle('is-visible', view === 'graph');
+      index?.classList.toggle('is-hidden', view === 'graph');
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => {
+      if (filter?.value.trim()) {
+        filter.value = '';
+        filter.dispatchEvent(new Event('input'));
+      }
+      setView(button.dataset.wikiView ?? 'index');
+    }));
+
+    filter?.addEventListener('input', () => {
+      const query = filter.value.trim().toLocaleLowerCase('zh-CN');
+      if (query) setView('index');
+      let visible = 0;
+      document.querySelectorAll<HTMLElement>('[data-wiki-category]').forEach((category) => {
+        let categoryCount = 0;
+        category.querySelectorAll<HTMLElement>('[data-wiki-entry]').forEach((entry) => {
+          const match = !query || (entry.dataset.search ?? '').toLocaleLowerCase('zh-CN').includes(query);
+          entry.hidden = !match;
+          if (match) categoryCount += 1;
+        });
+        category.hidden = categoryCount === 0;
+        visible += categoryCount;
+      });
+      if (note) {
+        note.textContent = query ? `找到 ${visible} 条与「${filter.value.trim()}」相关的词条。` : '';
+        note.classList.toggle('is-visible', Boolean(query));
+      }
+    });
+  </script>
+</BaseLayout>

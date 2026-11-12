@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { formatDate, tagSlug } from '../lib/site';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const href = `/posts/${post.id}/`;
+---
+
+<article class="post-card">
+  <div class="post-card__meta">
+    <span class="post-card__date">{formatDate(post.data.date)}</span>
+    <span class="post-card__category">{post.data.category}</span>
+  </div>
+  <div class="post-card__body">
+    <h2><a href={href}>{post.data.title}</a></h2>
+    <p>{post.data.description}</p>
+    <div class="tag-row">
+      {post.data.tags.map((tag) => <a class="tag" href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>)}
+    </div>
+  </div>
+  <a class="post-card__arrow" href={href} aria-label={`阅读：${post.data.title}`}><Icon name="arrow-right" /></a>
+</article>
